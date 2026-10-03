@@ -1,0 +1,68 @@
+---
+/**
+ * Layout for every page that isn't the home stage: the grid paper, the two header labels
+ * (same spots as on home, so they hold still through the page transition) and a content column.
+ * Placeholder styling for now; the real work/project pages will be designed later.
+ */
+import BaseLayout from './BaseLayout.astro';
+import { site } from '~/data/site';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="page">
+    <header class="page__header">
+      <a class="page__home" href="/" style="view-transition-name: about-label">{site.about.label}</a>
+      <span class="page__role" style="view-transition-name: role-label">{site.role.label}</span>
+    </header>
+    <main class="page__main">
+      <slot />
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    --gutter: clamp(20px, 3.75vw, 48px);
+    --grid: 40px;
+    min-height: 100dvh;
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: var(--grid) var(--grid);
+    background-attachment: fixed;
+  }
+
+  .page__header {
+    display: flex;
+    justify-content: space-between;
+    padding: calc(var(--gutter) * 0.7) var(--gutter);
+    font-size: clamp(14px, 1.4vw, 18px);
+  }
+  .page__home { position: relative; }
+  .page__home::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.2em;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform 0.35s var(--ease-text);
+  }
+  .page__home:hover::after { transform: scaleX(1); transform-origin: left center; }
+
+  .page__main {
+    padding: clamp(64px, 12vh, 140px) var(--gutter) 96px;
+    max-width: 1100px;
+  }
+</style>

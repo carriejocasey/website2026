@@ -1,0 +1,83 @@
+---
+/**
+ * The sky photo. One full-stage layer revealed through an animated clip-path window
+ * (right half -> full bleed -> rounded card; see HomeStage.astro for the shapes).
+ *
+ * The <img> is always there (fast first paint, no-JS fallback). When WebGL is
+ * available and motion is allowed, scripts/home/sky.ts draws the same image into
+ * the canvas on top with a slow cloud drift, then fades the canvas in.
+ */
+import { Image } from 'astro:assets';
+import sky from '~/assets/sky.jpg';
+---
+
+<div class="photo" aria-hidden="true">
+  <div class="photo__move">
+    <div class="photo__intro">
+      <Image
+        class="photo__img"
+        src={sky}
+        alt=""
+        widths={[1280, 1680, 2016]}
+        sizes="(max-aspect-ratio: 4/5) 300vw, 110vw"
+        format="webp"
+        quality={82}
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+      <canvas class="photo__canvas" data-sky></canvas>
+    </div>
+  </div>
+</div>
+
+<style>
+  .photo {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    background: var(--sky-base);
+    clip-path: var(--photo-clip);
+    transition: clip-path var(--dur) var(--ease);
+  }
+
+  /* 1353 x 1015 in Figma, never smaller than the stage (with room for the per-state nudges). */
+  .photo__move {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(calc(var(--u) * 1353), 106vw, calc((100dvh + var(--u) * 120) * 4 / 3));
+    aspect-ratio: 4 / 3;
+    transform: translate(-50%, -50%);
+    translate: var(--photo-nudge, 0 0);
+    transition: translate var(--dur) var(--ease);
+  }
+
+  .photo__intro { position: absolute; inset: 0; }
+
+  .photo__img,
+  .photo__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .photo__canvas { opacity: 0; transition: opacity 0.8s ease; }
+  .photo__canvas.is-live { opacity: 1; }
+
+  /* Portrait: anchor the photo bottom-right so the tree stays in frame. */
+  @media (max-aspect-ratio: 4/5) {
+    .photo__move {
+      left: auto;
+      top: auto;
+      right: -3%;
+      bottom: -3%;
+      width: max(calc((100dvh * 1.06) * 4 / 3), 106vw);
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,175 @@
+---
+/**
+ * "01 / WORK  Work samples" and "02 / PLAY  Side projects".
+ * Hovering the heading opens the section: its card grows around it and the project list
+ * rises in line by line. Where each section sits in each state is set in HomeStage.astro
+ * (--sx / --sy); this file only knows how a section looks.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { site, type SectionKey } from '~/data/site';
+
+interface Props {
+  key: SectionKey;
+  items: CollectionEntry<'work' | 'play'>[];
+}
+
+const { key, items } = Astro.props;
+const copy = site.sections[key];
+const titleId = `${key}-title`;
+---
+
+<section class:list={['section', `section--${key}`]} data-section={key} aria-labelledby={titleId}>
+  <a class="section__head" href={copy.href} data-trigger={key}>
+    <div class="mask"><span class="section__eyebrow line" data-intro-line>{copy.eyebrow}</span></div>
+    <div class="mask mask--title">
+      <h2 class="section__title line" id={titleId} data-intro-line style={`view-transition-name: ${key}-title`}>{copy.title}</h2>
+    </div>
+  </a>
+
+  {items.length > 0 && (
+    <div class="projects">
+      <ul class="projects__list" aria-label={copy.title}>
+        {items.map((item, i) => (
+          <li class="projects__item" style={`--i: ${i}`}>
+            <a class="project" href={`/${key}/${item.id}`}>
+              <span class="project__line">
+                <span class="project__title">{item.data.title.toUpperCase()}</span>
+                <span class="project__slash">/</span>
+                <em class="project__tag">{item.data.tag}</em>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+</section>
+
+<style>
+  .section {
+    position: absolute;
+    z-index: 3;
+    bottom: var(--section-bottom);
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    translate: var(--sx, 0) var(--sy, 0);
+    transition: translate var(--dur) var(--ease);
+  }
+  .section { left: var(--section-left); }
+  .section--work { color: var(--ink); }
+  .section--play { color: var(--on-photo); }
+
+  .section__head {
+    display: flex;
+    flex-direction: column;
+    height: var(--head-h);   /* Figma "Title" frame is a fixed 144px */
+    outline: none;
+  }
+  .section__eyebrow {
+    font-size: var(--fs-label);
+    line-height: normal;
+    white-space: nowrap;
+  }
+  .section__title {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: var(--fs-title);
+    font-weight: 400;
+    line-height: normal;
+    white-space: nowrap;
+    letter-spacing: -0.005em;
+  }
+  .section--play .section__title { font-style: italic; }
+
+  .section__head:focus-visible .section__title {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: calc(var(--u) * 10);
+  }
+
+  /* Masks hide text that slides in from below (intro + list reveal). */
+  .mask { overflow: hidden; display: block; }
+  /* Italic serif overhangs its box; give it room so the mask doesn't shave the swashes. */
+  .mask--title { margin-inline: -0.15em; padding-inline: 0.15em; }
+  .line { display: block; }
+
+  /* ---- project list: collapsed at rest ---- */
+
+  .projects {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--dur) var(--ease);
+  }
+  .projects__list {
+    min-height: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .section--work .projects__list { width: calc(var(--u) * 360); }
+
+  .project {
+    display: block;
+    overflow: hidden;
+    padding: calc(var(--u) * 12) calc(var(--u) * 8);
+    font-size: var(--fs-label);
+    line-height: normal;
+    white-space: nowrap;
+    outline: none;
+  }
+  .project__line {
+    position: relative;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5em;
+    translate: 0 110%;
+    opacity: 0;
+    /* closing: everything drops together, quickly */
+    transition: translate 0.25s var(--ease-close), opacity 0.2s linear;
+  }
+  .project__tag { font-size: calc(var(--fs-label) * 1.05); }
+  .section--play .project__tag { font-style: normal; }
+
+  /* Underline draws in from the left on hover / focus. */
+  .project__line::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.2em;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform 0.35s var(--ease-text);
+  }
+  .project:focus-visible .project__line::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+  @media (hover: hover) {
+    .project:hover .project__line::after {
+      transform: scaleX(1);
+      transform-origin: left center;
+    }
+  }
+
+  /* ---- open ---- */
+
+  :global([data-state="work"]) .section--work .projects,
+  :global([data-state="play"]) .section--play .projects { grid-template-rows: 1fr; }
+
+  :global([data-state="work"]) .section--work .project__line,
+  :global([data-state="play"]) .section--play .project__line {
+    translate: 0 0;
+    opacity: 1;
+    transition:
+      translate var(--dur-text) var(--ease-text) calc(0.12s + var(--i) * var(--stagger)),
+      opacity 0.3s linear calc(0.12s + var(--i) * var(--stagger));
+  }
+</style>

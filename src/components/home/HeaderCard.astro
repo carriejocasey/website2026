@@ -1,0 +1,147 @@
+---
+/**
+ * "carrie noonan*" and "*designer, maker": small labels that open into glass cards.
+ *
+ * The reveal follows the truus.co nav: the glass panel starts clipped to a small rounded
+ * box hugging the label, then the clip grows out to the full card while the lines rise in.
+ * The closed box is measured from the label in scripts/home/controller.ts.
+ */
+import { accent } from '~/data/format';
+
+interface Props {
+  key: 'about' | 'role';
+  label: string;
+  lines: readonly string[];
+  /** Swap the label to its bold cut while open (the "carrie noonan*" card does this). */
+  boldOnOpen?: boolean;
+  align?: 'start' | 'end';
+}
+
+const { key, label, lines, boldOnOpen = false, align = 'start' } = Astro.props;
+const bodyId = `${key}-body`;
+---
+
+<div
+  class:list={['hcard', `hcard--${key}`, `hcard--${align}`, { 'hcard--bold': boldOnOpen }]}
+  data-section={key}
+  data-zone={key}
+>
+  <div class="hcard__panel" aria-hidden="true"></div>
+
+  <button class="hcard__label" type="button" data-trigger={key} style={`view-transition-name: ${key}-label`} aria-expanded="false" aria-controls={bodyId}>
+    <span class="mask"><span class="hcard__stack" data-intro-line>
+      <span class="hcard__text hcard__text--regular">{label}</span>
+      {boldOnOpen && <span class="hcard__text hcard__text--bold" aria-hidden="true">{label}</span>}
+    </span></span>
+  </button>
+
+  <p class="hcard__body" id={bodyId}>
+    {lines.map((line, i) => (
+      <span class="hcard__line" style={`--i: ${i}`}><span set:html={accent(line)} /></span>
+    ))}
+  </p>
+</div>
+
+<style>
+  .hcard {
+    position: absolute;
+    z-index: 4;
+    top: var(--hcard-top);
+    padding: var(--hcard-pad);
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--u) * 24);
+    font-size: var(--fs-label);
+    line-height: normal;
+    color: var(--hcard-color);
+    transition: color 0.12s linear var(--hcard-flip, 0s);
+  }
+  .hcard--start { left: var(--hcard-side); align-items: flex-start; }
+  .hcard--end { right: var(--hcard-side); align-items: flex-end; text-align: right; }
+
+  /* ---- glass panel ---- */
+
+  .hcard__panel {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--glass-edge);
+    border-radius: calc(var(--u) * 24);
+    background: var(--glass-fill);
+    box-shadow: var(--shadow);
+    -webkit-backdrop-filter: blur(var(--glass-blur, 2px));
+    backdrop-filter: blur(var(--glass-blur, 2px));
+    /* closed: a small rounded box around the label (the --ci-* values are measured in JS) */
+    clip-path: inset(var(--ci-t, 50%) var(--ci-r, 50%) var(--ci-b, 50%) var(--ci-l, 50%) round calc(var(--u) * 12));
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      clip-path 0.35s var(--ease-close),
+      opacity 0.15s linear 0.2s,
+      visibility 0s linear 0.35s;
+  }
+  .hcard--role .hcard__panel { --glass-blur: 20px; }
+
+  /* ---- label ---- */
+
+  .hcard__label {
+    position: relative;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    cursor: default;
+    white-space: nowrap;
+    border-radius: 2px;
+  }
+  .mask { display: block; overflow: hidden; }
+  .hcard__stack { display: inline-grid; }
+  .hcard__text { grid-area: 1 / 1; transition: opacity 0.2s linear; }
+  .hcard--end .hcard__text { justify-self: end; }
+  .hcard__text--bold { font-weight: 700; opacity: 0; }
+
+  /* ---- body ---- */
+
+  .hcard__body {
+    position: relative;
+    margin: 0;
+    visibility: hidden;
+    transition: visibility 0s linear 0.35s;
+  }
+  .hcard--start .hcard__body { padding: 0 calc(var(--u) * 16); }
+  .hcard__line { display: block; overflow: hidden; white-space: pre; padding-block: 0.06em; }
+  .hcard__line > span {
+    display: inline-block;
+    translate: 0 110%;
+    transition: translate 0.25s var(--ease-close);
+  }
+  .hcard__line :global(em) { font-size: var(--fs-accent); }
+
+  /* ---- open ---- */
+
+  :global([data-state="about"]) .hcard--about .hcard__panel,
+  :global([data-state="role"]) .hcard--role .hcard__panel {
+    clip-path: inset(-12px -12px -12px -12px round calc(var(--u) * 24 + 12px));
+    opacity: 1;
+    visibility: visible;
+    transition:
+      clip-path var(--dur-card) var(--ease-open),
+      opacity 0.08s linear,
+      visibility 0s;
+  }
+
+  :global([data-state="about"]) .hcard--about .hcard__body,
+  :global([data-state="role"]) .hcard--role .hcard__body {
+    visibility: visible;
+    transition: visibility 0s;
+  }
+
+  :global([data-state="about"]) .hcard--about .hcard__line > span,
+  :global([data-state="role"]) .hcard--role .hcard__line > span {
+    translate: 0 0;
+    transition: translate var(--dur-text) var(--ease-text) calc(0.08s + var(--i) * var(--stagger));
+  }
+
+  :global([data-state="about"]) .hcard--bold .hcard__text--regular { opacity: 0; }
+  :global([data-state="about"]) .hcard--bold .hcard__text--bold { opacity: 1; }
+</style>

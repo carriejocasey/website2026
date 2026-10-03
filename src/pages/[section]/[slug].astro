@@ -1,0 +1,44 @@
+---
+/** A single work sample or side project, rendered from its markdown file. Placeholder design. */
+import { getCollection, render } from 'astro:content';
+import PageLayout from '~/layouts/PageLayout.astro';
+import { site, type SectionKey } from '~/data/site';
+
+export async function getStaticPaths() {
+  const sections = Object.keys(site.sections) as SectionKey[];
+  const paths = await Promise.all(
+    sections.map(async (section) => {
+      const items = await getCollection(section, ({ data }) => import.meta.env.DEV || !data.draft);
+      return items.map((entry) => ({ params: { section, slug: entry.id }, props: { section, entry } }));
+    }),
+  );
+  return paths.flat();
+}
+
+const { section, entry } = Astro.props;
+const { Content } = await render(entry);
+const copy = site.sections[section as SectionKey];
+---
+
+<PageLayout title={entry.data.title} description={entry.data.summary}>
+  <a class="back" href={copy.href}>← {copy.title}</a>
+  <h1 class="title">{entry.data.title}</h1>
+  <p class="tag"><em>{entry.data.tag}</em></p>
+  <div class="prose">
+    <Content />
+  </div>
+</PageLayout>
+
+<style>
+  .back { font-size: clamp(13px, 1.2vw, 16px); color: var(--ink-soft); transition: color 0.2s linear; }
+  .back:hover { color: var(--ink); }
+  .title {
+    margin: 0.4em 0 0;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(56px, 6.25vw, 96px);
+    line-height: 1.05;
+  }
+  .tag { margin: 0.2em 0 0; font-size: clamp(22px, 2vw, 28px); }
+  .prose { margin-top: clamp(40px, 8vh, 80px); max-width: 62ch; font-size: 16px; line-height: 1.6; }
+</style>

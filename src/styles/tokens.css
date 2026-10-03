@@ -1,0 +1,56 @@
+/*
+  Design tokens. Colors and type come from the Figma file "New Site 2026".
+
+  Sizing: the home page is drawn on a fixed design frame and scales as one piece.
+  Every length on the home stage is written as `calc(var(--u) * <figma px>)`, so it
+  matches Figma 1:1 at the frame size and scales evenly everywhere else.
+    landscape frame: 1280 x 832  (Figma)
+    portrait frame:   390 x 844  (no Figma design yet; see HomeStage.astro)
+*/
+
+@font-face { font-family: "CN Mono"; src: url("/fonts/atkinson-hyperlegible-mono-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "CN Mono"; src: url("/fonts/atkinson-hyperlegible-mono-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "CN Serif"; src: url("/fonts/instrument-serif-latin-400-normal.woff2") format("woff2"); font-style: normal; font-display: swap; }
+@font-face { font-family: "CN Serif"; src: url("/fonts/instrument-serif-latin-400-italic.woff2") format("woff2"); font-style: italic; font-display: swap; }
+
+:root {
+  color-scheme: light;
+
+  /* ---- scale ---- */
+  --frame-w: 1280;
+  --frame-h: 832;
+  --u: min(calc(100vw / var(--frame-w)), calc(100dvh / var(--frame-h)));
+
+  /* ---- color ---- */
+  --paper: #FAFAF7;
+  --grid-line: rgba(71, 69, 64, 0.13);   /* Figma: 0.5px at 30%; drawn here as 1px at 13% */
+  --ink: #000000;
+  --ink-soft: rgba(0, 0, 0, 0.55);
+  --on-photo: #FFFFFF;
+  --sky: #1F4FD1;                        /* sampled from the photo; used for focus rings and selection */
+  --sky-base: #2D5C9C;                   /* the photo's average color; shows while it loads */
+  --glass-fill: rgba(250, 250, 247, 0.20);
+  --glass-edge: #B4CCFF;
+  --shadow: 0 0 6px rgba(27, 31, 58, 0.08), 0 4px 4px rgba(27, 31, 58, 0.08);
+
+  /* ---- type ---- */
+  --mono: "CN Mono", "Atkinson Hyperlegible Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --serif: "CN Serif", "Instrument Serif", "Times New Roman", serif;
+
+  /* ---- motion ----
+     Opening is unhurried with a long, soft landing. Closing is quicker so the page
+     never feels like it's waiting on you. Tune the whole site from here. */
+  --ease-open: cubic-bezier(0.35, 0, 0, 1);
+  --ease-close: cubic-bezier(0.4, 0, 0.1, 1);
+  --ease-text: cubic-bezier(0.2, 0.7, 0, 1);   /* line reveals: quick start, gentle settle */
+  --dur-open: 0.85s;
+  --dur-close: 0.6s;
+  --dur-card: 0.45s;                           /* header glass cards */
+  --dur-text: 0.7s;
+  --stagger: 0.05s;
+}
+
+/* Portrait screens use their own design frame (see HomeStage.astro). */
+@media (max-aspect-ratio: 4/5) {
+  :root { --frame-w: 390; --frame-h: 844; }
+}

@@ -1,0 +1,48 @@
+---
+import '~/styles/base.css';
+import { site } from '~/data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Extra class on <body>, e.g. to lock scrolling on the home stage. */
+  bodyClass?: string;
+}
+
+const { title, description = site.description, bodyClass } = Astro.props;
+const fullTitle = title ? `${title} — ${site.name}` : site.title;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script is:inline>
+      // Before first paint: flag JS, and skip the home intro if it already played this session.
+      (function (root) {
+        root.classList.add('js');
+        try { if (sessionStorage.getItem('cn:intro-seen')) root.classList.add('intro-seen'); } catch (e) {}
+      })(document.documentElement);
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta name="theme-color" content="#FAFAF7" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+
+    <!-- Fonts used above the fold. -->
+    <link rel="preload" href="/fonts/atkinson-hyperlegible-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/instrument-serif-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin />
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    <slot />
+  </body>
+</html>

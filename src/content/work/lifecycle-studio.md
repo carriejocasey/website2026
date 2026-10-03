@@ -1,7 +1,7 @@
 ---
 title: Lifecycle Studio
 tag: Hightouch
-order: 3
+order: 1
 ---
 
 Case study coming soon.

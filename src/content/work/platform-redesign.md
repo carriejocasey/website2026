@@ -1,7 +1,7 @@
 ---
 title: Platform redesign
 tag: Lattice
-order: 1
+order: 2
 ---
 
 Case study coming soon.

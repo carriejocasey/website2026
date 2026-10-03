@@ -1,0 +1,14 @@
+---
+/** Up-and-right arrow for links that open another site. From Carrie's icon.svg; inherits the text color. */
+interface Props { class?: string }
+const { class: className } = Astro.props;
+---
+
+<svg class={className} viewBox="0 0 11 11" aria-hidden="true" focusable="false">
+  <path
+    fill="currentColor"
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M9.81171 7.40371C9.36043 7.41315 9.00226 7.05498 9.01171 6.60371L9.09136 2.79857L1.36573 10.5242C1.05331 10.8366 0.546779 10.8366 0.23436 10.5242C-0.0780599 10.2118 -0.0780599 9.70525 0.234359 9.39283L7.95999 1.6672L4.15485 1.74685C3.70358 1.7563 3.34541 1.39813 3.35485 0.946853C3.3643 0.495579 3.73779 0.122091 4.18906 0.112644L9.55134 0.000392793C10.2324 -0.0138643 10.7726 0.519929 10.7582 1.20722L10.6459 6.5695C10.6365 7.02077 10.263 7.39426 9.81171 7.40371Z"
+  />
+</svg>

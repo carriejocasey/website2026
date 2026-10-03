@@ -8,7 +8,8 @@ export async function getStaticPaths() {
   const sections = Object.keys(site.sections) as SectionKey[];
   const paths = await Promise.all(
     sections.map(async (section) => {
-      const items = await getCollection(section, ({ data }) => import.meta.env.DEV || !data.draft);
+      // Projects with a `url` link out to another site, so they don't get a page here.
+      const items = await getCollection(section, ({ data }) => !data.url && (import.meta.env.DEV || !data.draft));
       return items.map((entry) => ({ params: { section, slug: entry.id }, props: { section, entry } }));
     }),
   );

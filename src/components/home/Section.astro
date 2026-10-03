@@ -2,11 +2,14 @@
 /**
  * "01 / WORK  Work samples" and "02 / PLAY  side Projects".
  * The heading isn't a link; it opens the section (hover, focus, tap or Enter). Its card grows
- * around it and the project list rises in line by line. Each project links to its own page. Where each section sits in each state is set in HomeStage.astro
- * (--sx / --sy); this file only knows how a section looks.
+ * around it and the project list rises in line by line. Each project links to its own page, or
+ * out to another site (new tab, with a ↗ arrow) when its markdown sets `url`.
+ * Where each section sits in each state is set in HomeStage.astro (--sx / --sy); this file only
+ * knows how a section looks.
  */
 import type { CollectionEntry } from 'astro:content';
 import { site, type SectionKey } from '~/data/site';
+import ArrowUpRight from '~/components/icons/ArrowUpRight.astro';
 
 interface Props {
   key: SectionKey;
@@ -32,13 +35,29 @@ const listId = `${key}-projects`;
       <ul class="projects__list" id={listId} aria-label={copy.title}>
         {items.map((item, i) => (
           <li class="projects__item" style={`--i: ${i}`}>
-            <a class="project" href={`/${key}/${item.id}`}>
-              <span class="project__line">
-                <span class="project__title">{item.data.title.toUpperCase()}</span>
-                <span class="project__slash">/</span>
-                <em class="project__tag">{item.data.tag}</em>
-              </span>
-            </a>
+            {item.data.url ? (
+              <a class="project" href={item.data.url} target="_blank" rel="noopener">
+                <span class="project__line">
+                  <span class="project__text">
+                    <span class="project__title">{item.data.title.toUpperCase()}</span>
+                    <span class="project__slash">/</span>
+                    <em class="project__tag">{item.data.tag}</em>
+                  </span>
+                  <ArrowUpRight class="project__out" />
+                  <span class="visually-hidden">(opens in a new tab)</span>
+                </span>
+              </a>
+            ) : (
+              <a class="project" href={`/${key}/${item.id}`}>
+                <span class="project__line">
+                  <span class="project__text">
+                    <span class="project__title">{item.data.title.toUpperCase()}</span>
+                    <span class="project__slash">/</span>
+                    <em class="project__tag">{item.data.tag}</em>
+                  </span>
+                </span>
+              </a>
+            )}
           </li>
         ))}
       </ul>
@@ -119,7 +138,9 @@ const listId = `${key}-projects`;
   }
   .projects__list {
     min-height: 0;
-    overflow: hidden;
+    /* clip only vertically (for the open/close), so a row's ↗ can sit past its edge */
+    overflow-x: visible;
+    overflow-y: clip;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -133,7 +154,8 @@ const listId = `${key}-projects`;
 
   .project {
     display: block;
-    overflow: hidden;
+    overflow-x: visible;
+    overflow-y: clip;     /* the line rises in from below this edge */
     padding: calc(var(--u) * 12) calc(var(--u) * 8);
     font-size: var(--fs-label);
     line-height: normal;
@@ -150,11 +172,34 @@ const listId = `${key}-projects`;
     /* closing: everything drops together, quickly */
     transition: translate 0.25s var(--ease-close), opacity 0.2s linear;
   }
+  .project__text { position: relative; display: inline-flex; align-items: baseline; gap: 0.5em; }
   .project__tag { font-size: calc(var(--fs-label) * 1.05); }
+
+  /* ↗ on rows that open another site. It hangs just past the end of the text (taking no
+     space, so right-aligned rows stay aligned) and slides in on hover. */
+  .project :global(.project__out) {
+    position: absolute;
+    left: calc(100% + 0.5em);
+    top: 50%;
+    width: 0.61em;          /* 11px at the 18px label size, as drawn */
+    height: 0.61em;
+    margin-top: -0.3em;
+    opacity: 0;
+    translate: -0.25em 0.25em;
+    transition: opacity 0.2s linear, translate 0.35s var(--ease-text);
+  }
+  .project:focus-visible :global(.project__out) { opacity: 1; translate: 0 0; }
+  @media (hover: hover) {
+    .project:hover :global(.project__out) { opacity: 1; translate: 0 0; }
+  }
+  /* No hover on touch screens, so the arrow just stays put there. */
+  @media (hover: none) {
+    .project :global(.project__out) { opacity: 1; translate: 0 0; }
+  }
   .section--play .project__tag { font-style: normal; }
 
   /* Underline draws in from the text's aligned edge on hover / focus. */
-  .project__line::after {
+  .project__text::after {
     content: "";
     position: absolute;
     left: 0;
@@ -166,12 +211,12 @@ const listId = `${key}-projects`;
     transform-origin: var(--underline-out, right) center;
     transition: transform 0.35s var(--ease-text);
   }
-  .project:focus-visible .project__line::after {
+  .project:focus-visible .project__text::after {
     transform: scaleX(1);
     transform-origin: var(--underline-in, left) center;
   }
   @media (hover: hover) {
-    .project:hover .project__line::after {
+    .project:hover .project__text::after {
       transform: scaleX(1);
       transform-origin: var(--underline-in, left) center;
     }

@@ -13,6 +13,8 @@ import { z } from 'astro/zod';
  *   order    Sort order, lowest first.
  *   home     Set to false to keep it off the home page list.
  *   draft    Set to true to hide it everywhere (still visible in `npm run dev`).
+ *   url      Optional. Links the home row straight to another site (new tab, with a ↗ arrow)
+ *            instead of a page here; no page is generated for it.
  */
 const project = z.object({
   title: z.string(),
@@ -23,6 +25,7 @@ const project = z.object({
   draft: z.boolean().default(false),
   year: z.number().optional(),
   role: z.string().optional(),
+  url: z.url().optional(),
 });
 
 const work = defineCollection({

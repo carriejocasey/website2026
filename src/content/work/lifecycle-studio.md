@@ -1,5 +1,5 @@
 ---
-title: Campaigns 2.0
+title: Lifecycle Studio
 tag: Hightouch
 order: 3
 ---

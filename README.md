@@ -25,24 +25,24 @@ src/
   styles/tokens.css      colors, fonts, motion curves and durations
   components/home/
     HomeStage.astro      the home stage: every state's geometry, plus the intro
-    Section.astro        "Work samples" / "Side projects" heading + project list
+    Section.astro        "Work samples" / "side Projects" heading + project list
     HeaderCard.astro     "carrie noonan*" / "*designer, maker" glass cards
     SkyPhoto.astro       the sky photo layer
   scripts/home/
     controller.ts        which state is open (hover, keyboard, touch rules)
     sky.ts               WebGL cloud drift
   layouts/               BaseLayout (head/meta), PageLayout (inner pages)
-  pages/                 index, [section]/index (/work, /play), [section]/[slug], 404
+  pages/                 index (home), [section]/[slug] (project pages), 404
 ```
 
 ## Common changes
 
 **Add a work sample or side project:** add a markdown file to `src/content/work` or
-`src/content/play`. It shows up on the home list, the index page and its own page.
+`src/content/play`. It shows up in the home list and gets its own page.
 
 ```md
 ---
-title: Campaigns 2.0      # shown in caps on home
+title: Lifecycle Studio # shown in caps on home
 tag: Hightouch            # the italic serif bit after the slash
 order: 3                  # lower comes first
 home: true                # false keeps it off the home list
@@ -73,10 +73,12 @@ Design source: Figma file **New Site 2026** (frames 4:6, 4:44, 4:34, 7:314, 7:36
 - **One stage, one state.** `<main data-state>` is `default`, `work`, `play`, `about` or
   `role`. Everything visual is CSS keyed off that attribute. The controller only decides which
   state is current.
-- **Layers.** Grid paper, then the sky photo (its `clip-path` animates between right half, full
-  bleed and rounded card), then the "sheet" (the work card). At rest the sheet is an exact copy
-  of the left half, so it's invisible. Opening work clips it down to the card while its grid
-  zooms from 40px to 48px around a point that lands the card's edges on grid lines.
+- **Layers.** Grid paper, then the sky photo, then the "sheet" (the work card). At rest the
+  sheet is an exact copy of the left half, so it's invisible.
+- **Work and play mirror each other.** Hovering a half shrinks that half into a card, with the
+  other material already behind it. For play, the sky clips down to its card over the paper. For
+  work, the sky is quietly made full bleed behind the paper, and the sheet clips down to its card
+  while its grid zooms from 40px to 48px (landing the card's edges on grid lines).
 - **Hover rules.** A state opens only from its text, never from background imagery. It stays
   open while the pointer is inside the card it opened into (its zone), so text that moves never
   slips out from under the cursor. Leaving the zone closes it after 160ms of grace, and landing
@@ -88,17 +90,22 @@ Design source: Figma file **New Site 2026** (frames 4:6, 4:44, 4:34, 7:314, 7:36
   slides up line by line. It's skipped on later visits and under reduced motion.
 - **Clouds.** A small WebGL shader warps and drifts the photo on the GPU, and keeps the tree
   still. The plain `<img>` sits underneath as a fallback. It's off under `prefers-reduced-motion`.
-- **Accessibility.** Focusing a heading or a project link opens its section. Header labels are
-  buttons with `aria-expanded`. Esc closes. All links are real, so everything works without JS.
-- **Touch.** The first tap on a heading opens it, and the second follows the link. Tapping
-  outside closes it.
+- **Accessibility.** Focusing a heading or a project link opens its section. Headings and header
+  labels are buttons with `aria-expanded`. Esc closes. Without JS, the project lists simply show.
+- **Header cards.** "carrie noonan*" and "*designer, maker" behave identically: the label goes
+  bold and the glass grows out of it. Closing runs the same path backwards and slower. On
+  narrow screens, the other label steps aside while a card is open.
+- **Headings open, projects link.** "Work samples" and "side Projects" aren't links (there are no
+  /work or /play pages). They're buttons that open their card, and each project row links
+  straight to its page. Project pages link back home.
+- **Touch.** Tapping a heading or header label toggles it. Tapping outside closes.
 - **Portrait screens** (phones, tall tablets) get a stacked layout: paper on top, sky below.
   There's no Figma frame for it yet; its values are in the portrait block in `HomeStage.astro`.
 
 ## Open items
 
 - Portrait layout needs a design pass in Figma.
-- `/work`, `/play` and the project pages are placeholders, waiting on their designs.
+- Project pages are placeholders, waiting on their design.
 - Figma repeats "AUREOLE / Find your light" twice in the side projects list. The site lists
   one entry until there's a second project.
 - Add an Open Graph image.

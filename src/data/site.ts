@@ -1,8 +1,9 @@
 /**
  * Site-wide copy. Edit words here; layout and motion live in the components and styles.
  *
- * Lines can mix in the italic serif accent with *asterisks*, like markdown:
- *   'living the *dream*'  ->  living the <em>dream</em>
+ * Lines use a little markdown:
+ *   'living the *dream*'                 ->  italic serif accent on "dream"
+ *   '[*Lattice*](https://lattice.com/)'  ->  that word links out (new tab)
  */
 export const site = {
   name: 'Carrie Noonan',
@@ -16,12 +17,12 @@ export const site = {
 
   role: {
     label: '*designer, maker',
-    lines: ['currently at *Hightouch*', 'previously at *Lattice*'],
+    lines: ['currently at [*Hightouch*](https://hightouch.com/)', 'previously at [*Lattice*](https://lattice.com/)'],
   },
 
   sections: {
-    work: { eyebrow: '01 / WORK', title: 'Work samples', href: '/work' },
-    play: { eyebrow: '02 / PLAY', title: 'Side projects', href: '/play' },
+    work: { eyebrow: '01 / WORK', title: 'Work samples' },
+    play: { eyebrow: '02 / PLAY', title: 'side Projects' },
   },
 } as const;
 

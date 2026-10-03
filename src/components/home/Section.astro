@@ -1,8 +1,8 @@
 ---
 /**
- * "01 / WORK  Work samples" and "02 / PLAY  Side projects".
- * Hovering the heading opens the section: its card grows around it and the project list
- * rises in line by line. Where each section sits in each state is set in HomeStage.astro
+ * "01 / WORK  Work samples" and "02 / PLAY  side Projects".
+ * The heading isn't a link; it opens the section (hover, focus, tap or Enter). Its card grows
+ * around it and the project list rises in line by line. Each project links to its own page. Where each section sits in each state is set in HomeStage.astro
  * (--sx / --sy); this file only knows how a section looks.
  */
 import type { CollectionEntry } from 'astro:content';
@@ -16,19 +16,20 @@ interface Props {
 const { key, items } = Astro.props;
 const copy = site.sections[key];
 const titleId = `${key}-title`;
+const listId = `${key}-projects`;
 ---
 
 <section class:list={['section', `section--${key}`]} data-section={key} aria-labelledby={titleId}>
-  <a class="section__head" href={copy.href} data-trigger={key}>
-    <div class="mask"><span class="section__eyebrow line" data-intro-line>{copy.eyebrow}</span></div>
-    <div class="mask mask--title">
-      <h2 class="section__title line" id={titleId} data-intro-line style={`view-transition-name: ${key}-title`}>{copy.title}</h2>
-    </div>
-  </a>
+  <h2 class="section__heading" id={titleId}>
+    <button class="section__head" type="button" data-trigger={key} aria-expanded="false" aria-controls={listId}>
+      <span class="mask"><span class="section__eyebrow line" data-intro-line>{copy.eyebrow}</span></span>
+      <span class="mask mask--title"><span class="section__title line" data-intro-line>{copy.title}</span></span>
+    </button>
+  </h2>
 
   {items.length > 0 && (
     <div class="projects">
-      <ul class="projects__list" aria-label={copy.title}>
+      <ul class="projects__list" id={listId} aria-label={copy.title}>
         {items.map((item, i) => (
           <li class="projects__item" style={`--i: ${i}`}>
             <a class="project" href={`/${key}/${item.id}`}>
@@ -56,14 +57,30 @@ const titleId = `${key}-title`;
     translate: var(--sx, 0) var(--sy, 0);
     transition: translate var(--dur) var(--ease);
   }
-  .section { left: var(--section-left); }
-  .section--work { color: var(--ink); }
-  .section--play { color: var(--on-photo); }
+  /* Work hangs from the left edge, play from the right (lined up with "*designer, maker"). */
+  .section--work { left: var(--section-x); color: var(--ink); }
+  .section--play {
+    right: var(--section-x);
+    align-items: flex-end;
+    text-align: right;
+    color: var(--on-photo);
+    --underline-in: right;   /* hover underlines draw in from the aligned edge */
+    --underline-out: left;
+  }
 
+  .section__heading { margin: 0; font: inherit; }
   .section__head {
     display: flex;
     flex-direction: column;
+    align-items: inherit;
     height: var(--head-h);   /* Figma "Title" frame is a fixed 144px */
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+    cursor: default;
     outline: none;
   }
   .section__eyebrow {
@@ -72,7 +89,6 @@ const titleId = `${key}-title`;
     white-space: nowrap;
   }
   .section__title {
-    margin: 0;
     font-family: var(--serif);
     font-size: var(--fs-title);
     font-weight: 400;
@@ -109,9 +125,11 @@ const titleId = `${key}-title`;
     list-style: none;
     display: flex;
     flex-direction: column;
+    align-items: inherit;
     gap: 1px;
   }
   .section--work .projects__list { width: calc(var(--u) * 360); }
+  .projects { align-items: inherit; }
 
   .project {
     display: block;
@@ -135,7 +153,7 @@ const titleId = `${key}-title`;
   .project__tag { font-size: calc(var(--fs-label) * 1.05); }
   .section--play .project__tag { font-style: normal; }
 
-  /* Underline draws in from the left on hover / focus. */
+  /* Underline draws in from the text's aligned edge on hover / focus. */
   .project__line::after {
     content: "";
     position: absolute;
@@ -145,24 +163,26 @@ const titleId = `${key}-title`;
     height: 1px;
     background: currentColor;
     transform: scaleX(0);
-    transform-origin: right center;
+    transform-origin: var(--underline-out, right) center;
     transition: transform 0.35s var(--ease-text);
   }
   .project:focus-visible .project__line::after {
     transform: scaleX(1);
-    transform-origin: left center;
+    transform-origin: var(--underline-in, left) center;
   }
   @media (hover: hover) {
     .project:hover .project__line::after {
       transform: scaleX(1);
-      transform-origin: left center;
+      transform-origin: var(--underline-in, left) center;
     }
   }
 
   /* ---- open ---- */
 
   :global([data-state="work"]) .section--work .projects,
-  :global([data-state="play"]) .section--play .projects { grid-template-rows: 1fr; }
+  :global([data-state="play"]) .section--play .projects,
+  :global(html:not(.js)) .projects { grid-template-rows: 1fr; }
+  :global(html:not(.js)) .project__line { translate: 0 0; opacity: 1; }   /* no JS: lists just show */
 
   :global([data-state="work"]) .section--work .project__line,
   :global([data-state="play"]) .section--play .project__line {

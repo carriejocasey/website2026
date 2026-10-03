@@ -4,12 +4,12 @@ import { z } from 'astro/zod';
 
 /**
  * Work samples and side projects are markdown files in src/content/work and src/content/play.
- * The file name becomes the URL: src/content/work/campaigns-2.md -> /work/campaigns-2
+ * The file name becomes the URL: src/content/work/lifecycle-studio.md -> /work/lifecycle-studio
  *
  * Frontmatter shared by both:
  *   title    Shown in caps on the home list ("PLATFORM REDESIGN").
  *   tag      The italic serif bit after the slash ("Lattice", "Find your light").
- *   summary  One line used on index pages and in meta descriptions.
+ *   summary  One line used in the page's meta description.
  *   order    Sort order, lowest first.
  *   home     Set to false to keep it off the home page list.
  *   draft    Set to true to hide it everywhere (still visible in `npm run dev`).

@@ -11,8 +11,8 @@
  *   - Leaving the zone closes after a short grace period, so a sloppy edge doesn't snap
  *     it shut. Landing on another trigger switches straight to that state.
  *   - Keyboard: focusing anything in a section opens it; Esc closes.
- *   - Touch: the first tap on a heading opens it, the second follows the link; tapping
- *     outside closes.
+ *   - Touch: tapping a heading or header label toggles it. Tapping outside closes.
+ *   - Headings and header labels are buttons with aria-expanded; projects are the links.
  *   - Review helper: /#work, /#play, /#about or /#role pins that state (Esc releases).
  */
 import { mountSky } from './sky';
@@ -53,6 +53,8 @@ export function initHome() {
   function set(next: HomeState) {
     window.clearTimeout(closeTimer);
     if (next === state) return;
+    // CSS uses the previous state to pick transitions that depend on where we came from.
+    stage!.dataset.prev = state;
     state = next;
     stage!.dataset.state = next;
     labels.forEach((b) => b.setAttribute('aria-expanded', String(b.dataset.trigger === next)));
@@ -119,11 +121,10 @@ export function initHome() {
     const touch = lastPointerType === 'touch' || matchMedia('(hover: none)').matches;
 
     if (touch) {
-      // First tap on a heading opens its state; the next one follows the link.
-      if (isOpenState(trigger) && trigger !== state) {
-        e.preventDefault();
+      // Headings and header labels are toggles.
+      if (isOpenState(trigger)) {
         pinned = false;
-        set(trigger);
+        set(trigger === state ? 'default' : trigger);
         return;
       }
       if (!target.closest(`[data-section="${state}"]`) && !(state !== 'default' && inZone(state, e.clientX, e.clientY))) {
@@ -132,8 +133,8 @@ export function initHome() {
       return;
     }
 
-    // Keyboard activation of a header label (Enter / Space) toggles its card.
-    if (isOpenState(trigger) && target.closest('button') && e.detail === 0) {
+    // Keyboard activation (Enter / Space) toggles. A mouse click leaves it open: hover already opened it.
+    if (isOpenState(trigger) && e.detail === 0) {
       set(state === trigger ? 'default' : trigger);
     }
   });

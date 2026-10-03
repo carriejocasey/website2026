@@ -3,8 +3,11 @@
  * The home page: one non-scrolling stage with five states.
  *
  *   default  split: grid paper left, sky right            (Figma 4:6)
- *   work     sky goes full bleed, left half becomes a card (Figma 4:44)
- *   play     sky shrinks into a rounded card               (Figma 4:34)
+ *   work     the paper shrinks into a card over the sky    (Figma 4:44)
+ *   play     the sky shrinks into a card over the paper    (Figma 4:34)
+ *
+ * Work and play are mirror images: hovering a half shrinks *that half* into a card, and the
+ * other material is already waiting behind it. Nothing grows in from the other side.
  *   about    "carrie noonan*" glass card                   (Figma 7:314)
  *   role     "*designer, maker" glass card                 (Figma 7:361)
  *
@@ -41,7 +44,7 @@ const play = (await getCollection('play', visible)).sort(byOrder);
   <div class="zone zone--work" data-zone="work" aria-hidden="true"></div>
   <div class="zone zone--play" data-zone="play" aria-hidden="true"></div>
 
-  <HeaderCard key="about" label={site.about.label} lines={site.about.lines} boldOnOpen />
+  <HeaderCard key="about" label={site.about.label} lines={site.about.lines} />
   <HeaderCard key="role" label={site.role.label} lines={site.role.lines} align="end" />
 
   <Section key="work" items={work} />
@@ -75,18 +78,19 @@ const play = (await getCollection('play', visible)).sort(byOrder);
     --card-split: calc(var(--u) * 128);                      /* how far a card reaches past the middle */
     --card-r: calc(var(--u) * 32);
 
-    /* section headings at rest */
+    /* section headings at rest: work from the left edge, play from the right edge */
     --work-x: calc(var(--u) * 48);
     --work-y: calc(var(--u) * 48);
-    --play-x: calc(50% + var(--u) * 48);
+    --play-x: calc(var(--u) * 48);
     --play-y: calc(var(--u) * 48);
 
     /* header cards */
     --hcard-top: calc(var(--u) * 16);
-    --hcard-side: calc(var(--u) * 16);
-    --hcard-pad: calc(var(--u) * 32 + 1px);
+    --hcard-side: calc(var(--u) * 15);
+    --hcard-pad: calc(var(--u) * 32 + 1px);        /* + the glass border, so labels land 48 from each edge */
     --about-color: var(--ink);
     --role-color: var(--on-photo);
+    --opposite-label: 1;           /* opacity of the other header label while a card is open */
 
     /* shapes, per state */
     --photo-clip: inset(0 0 0 50% round 0px);
@@ -99,38 +103,52 @@ const play = (await getCollection('play', visible)).sort(byOrder);
     --dur: var(--dur-close);
     --ease: var(--ease-close);
 
-    /* When a label sits where the sky slides over it, its color flips at the moment the
-       edge passes. These delays are measured against --ease-open / --ease-close. */
-    --about-flip: 0.08s;
-    --role-flip: 0.14s;
+    /* The sky's clip normally animates with everything else. See "Sky behind the paper" below. */
+    --photo-dur: var(--dur);
+    --photo-delay: 0s;
+
+    /* A header label changes color the moment a card edge passes over it. These delays are
+       measured against --ease-open / --ease-close; both edges cross the labels halfway. */
+    --flip-open: 0.16s;
+    --flip-close: 0.13s;
+    --flip: var(--flip-close);
   }
 
   .stage[data-state="work"] {
     --dur: var(--dur-open);
     --ease: var(--ease-open);
+    --flip: var(--flip-open);
     --photo-clip: inset(0 0 0 0 round 0px);
-    --photo-nudge: calc(var(--u) * -37) 0;
     --sheet-clip: inset(var(--card-top) calc(50% - var(--card-split)) var(--card-edge) var(--card-edge) round var(--card-r));
     --sheet-grid: calc(var(--grid) * var(--sheet-zoom));
     --sheet-pos: var(--sheet-grid-shift);
     --about-color: var(--on-photo);
-    --about-flip: 0.3s;
+    --role-color: var(--on-photo);
   }
   .stage[data-state="work"] .section--work { --sx: calc(var(--u) * 32); --sy: calc(var(--u) * -32); }
-  .stage[data-state="work"] .section--play { --sx: calc(var(--u) * 128); }
 
   .stage[data-state="play"] {
     --dur: var(--dur-open);
     --ease: var(--ease-open);
+    --flip: var(--flip-open);
     --photo-clip: inset(var(--card-top) var(--card-edge) var(--card-edge) calc(50% - var(--card-split)) round var(--card-r));
     --photo-nudge: calc(var(--u) * -36) calc(var(--u) * 20);
     /* The sheet tucks away under the paper edge so it never overlaps the sky card. */
     --sheet-clip: inset(0 calc(50% + var(--card-split)) 0 0 round 0px);
     --role-color: var(--ink);
-    --role-flip: 0.17s;
-    --about-flip: 0.15s;
   }
-  .stage[data-state="play"] .section--play { --sx: calc(var(--u) * -128); --sy: calc(var(--u) * -32); }
+  .stage[data-state="play"] .section--play { --sx: calc(var(--u) * -32); --sy: calc(var(--u) * -32); }
+
+  /* Sky behind the paper. While work is open the sky has to fill the whole stage, but it
+     should never be seen *growing* there: it's meant to have been behind the paper all along.
+     So the sky's clip jumps to full bleed while the paper still covers the left half, and on
+     the way back it waits until the paper has fully closed before jumping back. Going between
+     work and play, the sky really does change shape, so that animates as usual. */
+  .stage[data-state="work"]:not([data-prev="play"]) { --photo-dur: 0s; }
+  .stage:is([data-state="default"], [data-state="about"], [data-state="role"])[data-prev="work"] {
+    --photo-dur: 0s;
+    --photo-delay: var(--dur-close);
+  }
 
   /* ------------------------------------------------------------------
      Geometry: portrait (phones, tall tablets). No Figma frame yet; this
@@ -159,23 +177,20 @@ const play = (await getCollection('play', visible)).sort(byOrder);
       --hcard-side: calc(var(--u) * 8);
       --hcard-pad: calc(var(--u) * 16 + 1px);
       --role-color: var(--ink);
+      --opposite-label: 0;           /* both labels share one row, so an open card hides the other */
 
       --photo-clip: inset(50% 0 0 0 round 0px);
       --photo-clip-intro: inset(100% 0 0 0 round 0px);
       --sheet-clip: inset(0 0 50% 0 round 0px);
 
-      --about-flip: 0.05s;
-      --role-flip: 0.05s;
+      /* the paper card's top edge crosses the labels a third of the way in (and out) */
+      --flip-open: 0.13s;
+      --flip-close: 0.17s;
     }
     .stage[data-state="work"] {
-      --photo-nudge: 0 0;
       --sheet-clip: inset(var(--card-top) var(--card-edge) calc(50% - var(--card-split)) var(--card-edge) round var(--card-r));
-      --role-color: var(--on-photo);
-      --about-flip: 0.48s;
-      --role-flip: 0.48s;
     }
     .stage[data-state="work"] .section--work { --sx: calc(var(--u) * 16); --sy: calc(var(--u) * 96); }
-    .stage[data-state="work"] .section--play { --sx: 0; }
 
     .stage[data-state="play"] {
       --photo-nudge: 0 0;
@@ -183,7 +198,7 @@ const play = (await getCollection('play', visible)).sort(byOrder);
       --sheet-clip: inset(0 0 calc(50% + var(--card-split)) 0 round 0px);
       --role-color: var(--ink);
     }
-    .stage[data-state="play"] .section--play { --sx: calc(var(--u) * 16); --sy: calc(var(--u) * -16); }
+    .stage[data-state="play"] .section--play { --sx: calc(var(--u) * -16); --sy: calc(var(--u) * -16); }
     .stage[data-state="play"] .section--work { --sy: calc(var(--u) * -96); }
 
     .zone--work { inset: var(--card-top) var(--card-edge) calc(50% - var(--card-split)) var(--card-edge); }
@@ -231,10 +246,14 @@ const play = (await getCollection('play', visible)).sort(byOrder);
   .zone--work { inset: var(--card-top) calc(50% - var(--card-split)) var(--card-edge) var(--card-edge); }
   .zone--play { inset: var(--card-top) var(--card-edge) var(--card-edge) calc(50% - var(--card-split)); }
 
-  .section--work { --section-left: var(--work-x); --section-bottom: var(--work-y); }
-  .section--play { --section-left: var(--play-x); --section-bottom: var(--play-y); }
-  .hcard--about { --hcard-color: var(--about-color); --hcard-flip: var(--about-flip); }
-  .hcard--role  { --hcard-color: var(--role-color);  --hcard-flip: var(--role-flip); }
+  .section--work { --section-x: var(--work-x); --section-bottom: var(--work-y); }
+  .section--play { --section-x: var(--play-x); --section-bottom: var(--play-y); }
+  .hcard--about { --hcard-color: var(--about-color); }
+  .hcard--role  { --hcard-color: var(--role-color); }
+
+  /* While one header card is open, the other label steps back (fully, on narrow screens). */
+  .stage[data-state="about"] .hcard--role .hcard__label,
+  .stage[data-state="role"] .hcard--about .hcard__label { opacity: var(--opposite-label); }
 
   /* ------------------------------------------------------------------
      Intro (first visit per session). The controller moves data-intro from

@@ -1,7 +1,8 @@
 ---
 /**
- * The sky photo. One full-stage layer revealed through an animated clip-path window
- * (right half -> full bleed -> rounded card; see HomeStage.astro for the shapes).
+ * The sky photo. One full-stage layer revealed through a clip-path window: the right half
+ * at rest, a rounded card for play, and full bleed (hidden behind the paper card) for work.
+ * See HomeStage.astro for the shapes.
  *
  * The <img> is always there (fast first paint, no-JS fallback). When WebGL is
  * available and motion is allowed, scripts/home/sky.ts draws the same image into
@@ -39,7 +40,7 @@ import sky from '~/assets/sky.jpg';
     overflow: hidden;
     background: var(--sky-base);
     clip-path: var(--photo-clip);
-    transition: clip-path var(--dur) var(--ease);
+    transition: clip-path var(--photo-dur) var(--ease) var(--photo-delay);
   }
 
   /* 1353 x 1015 in Figma, never smaller than the stage (with room for the per-state nudges). */

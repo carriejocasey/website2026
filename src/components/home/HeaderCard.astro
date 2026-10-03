@@ -2,9 +2,12 @@
 /**
  * "carrie noonan*" and "*designer, maker": small labels that open into glass cards.
  *
- * The reveal follows the truus.co nav: the glass panel starts clipped to a small rounded
- * box hugging the label, then the clip grows out to the full card while the lines rise in.
- * The closed box is measured from the label in scripts/home/controller.ts.
+ * Both cards behave identically; any difference you see comes from what's behind them.
+ *
+ * Opening follows the truus.co nav: the glass panel starts clipped to a small rounded box
+ * hugging the label, then grows out to the full card while the lines rise in. Closing runs
+ * the same path backwards, unhurried: the lines sink away, the panel folds back into the
+ * label, then fades. The closed box is measured from the label in scripts/home/controller.ts.
  */
 import { accent } from '~/data/format';
 
@@ -12,17 +15,15 @@ interface Props {
   key: 'about' | 'role';
   label: string;
   lines: readonly string[];
-  /** Swap the label to its bold cut while open (the "carrie noonan*" card does this). */
-  boldOnOpen?: boolean;
   align?: 'start' | 'end';
 }
 
-const { key, label, lines, boldOnOpen = false, align = 'start' } = Astro.props;
+const { key, label, lines, align = 'start' } = Astro.props;
 const bodyId = `${key}-body`;
 ---
 
 <div
-  class:list={['hcard', `hcard--${key}`, `hcard--${align}`, { 'hcard--bold': boldOnOpen }]}
+  class:list={['hcard', `hcard--${key}`, `hcard--${align}`]}
   data-section={key}
   data-zone={key}
 >
@@ -31,7 +32,7 @@ const bodyId = `${key}-body`;
   <button class="hcard__label" type="button" data-trigger={key} style={`view-transition-name: ${key}-label`} aria-expanded="false" aria-controls={bodyId}>
     <span class="mask"><span class="hcard__stack" data-intro-line>
       <span class="hcard__text hcard__text--regular">{label}</span>
-      {boldOnOpen && <span class="hcard__text hcard__text--bold" aria-hidden="true">{label}</span>}
+      <span class="hcard__text hcard__text--bold" aria-hidden="true">{label}</span>
     </span></span>
   </button>
 
@@ -54,7 +55,11 @@ const bodyId = `${key}-body`;
     font-size: var(--fs-label);
     line-height: normal;
     color: var(--hcard-color);
-    transition: color 0.12s linear var(--hcard-flip, 0s);
+    transition: color 0.12s linear var(--flip, 0s);
+
+    /* closing choreography (opening is set further down) */
+    --close: 0.6s;
+    --close-ease: cubic-bezier(0.55, 0, 0.25, 1);
   }
   .hcard--start { left: var(--hcard-side); align-items: flex-start; }
   .hcard--end { right: var(--hcard-side); align-items: flex-end; text-align: right; }
@@ -68,19 +73,19 @@ const bodyId = `${key}-body`;
     border-radius: calc(var(--u) * 24);
     background: var(--glass-fill);
     box-shadow: var(--shadow);
-    -webkit-backdrop-filter: blur(var(--glass-blur, 2px));
-    backdrop-filter: blur(var(--glass-blur, 2px));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
     /* closed: a small rounded box around the label (the --ci-* values are measured in JS) */
     clip-path: inset(var(--ci-t, 50%) var(--ci-r, 50%) var(--ci-b, 50%) var(--ci-l, 50%) round calc(var(--u) * 12));
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
+    /* folds back into the label just after the lines start leaving, then fades out */
     transition:
-      clip-path 0.35s var(--ease-close),
-      opacity 0.15s linear 0.2s,
-      visibility 0s linear 0.35s;
+      clip-path var(--close) var(--close-ease) 0.08s,
+      opacity 0.25s linear calc(var(--close) - 0.12s),
+      visibility 0s linear calc(var(--close) + 0.15s);
   }
-  .hcard--role .hcard__panel { --glass-blur: 20px; }
 
   /* ---- label ---- */
 
@@ -93,10 +98,11 @@ const bodyId = `${key}-body`;
     cursor: default;
     white-space: nowrap;
     border-radius: 2px;
+    transition: opacity 0.3s linear;
   }
   .mask { display: block; overflow: hidden; }
   .hcard__stack { display: inline-grid; }
-  .hcard__text { grid-area: 1 / 1; transition: opacity 0.2s linear; }
+  .hcard__text { grid-area: 1 / 1; transition: opacity 0.35s linear 0.1s; }
   .hcard--end .hcard__text { justify-self: end; }
   .hcard__text--bold { font-weight: 700; opacity: 0; }
 
@@ -106,16 +112,32 @@ const bodyId = `${key}-body`;
     position: relative;
     margin: 0;
     visibility: hidden;
-    transition: visibility 0s linear 0.35s;
+    transition: visibility 0s linear calc(var(--close) + 0.15s);
   }
   .hcard--start .hcard__body { padding: 0 calc(var(--u) * 16); }
-  .hcard__line { display: block; overflow: hidden; white-space: pre; padding-block: 0.06em; }
+  .hcard__line { display: block; overflow: hidden; white-space: pre; padding-block: 0.06em 0.18em; margin-bottom: -0.12em; }  /* room for link underlines inside the mask */
   .hcard__line > span {
     display: inline-block;
     translate: 0 110%;
-    transition: translate 0.25s var(--ease-close);
+    opacity: 0;
+    transition:
+      translate 0.45s cubic-bezier(0.5, 0, 0.75, 0),
+      opacity 0.3s linear 0.1s;
   }
   .hcard__line :global(em) { font-size: var(--fs-accent); }
+
+  /* Links out (Hightouch, Lattice): a faint underline that firms up on hover. */
+  .hcard__line :global(a) {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+    transition: text-decoration-color 0.2s linear;
+    border-radius: 2px;
+  }
+  .hcard__line :global(a:hover),
+  .hcard__line :global(a:focus-visible) { text-decoration-color: currentColor; }
+  .hcard__line :global(a:focus-visible) { outline-offset: 2px; }
 
   /* ---- open ---- */
 
@@ -139,9 +161,15 @@ const bodyId = `${key}-body`;
   :global([data-state="about"]) .hcard--about .hcard__line > span,
   :global([data-state="role"]) .hcard--role .hcard__line > span {
     translate: 0 0;
-    transition: translate var(--dur-text) var(--ease-text) calc(0.08s + var(--i) * var(--stagger));
+    opacity: 1;
+    transition:
+      translate var(--dur-text) var(--ease-text) calc(0.08s + var(--i) * var(--stagger)),
+      opacity 0.2s linear calc(0.08s + var(--i) * var(--stagger));
   }
 
-  :global([data-state="about"]) .hcard--bold .hcard__text--regular { opacity: 0; }
-  :global([data-state="about"]) .hcard--bold .hcard__text--bold { opacity: 1; }
+  /* The label switches to its bold cut while its card is open. */
+  :global([data-state="about"]) .hcard--about .hcard__text--regular,
+  :global([data-state="role"]) .hcard--role .hcard__text--regular { opacity: 0; transition-delay: 0s; }
+  :global([data-state="about"]) .hcard--about .hcard__text--bold,
+  :global([data-state="role"]) .hcard--role .hcard__text--bold { opacity: 1; transition-delay: 0s; }
 </style>

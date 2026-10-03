@@ -8,20 +8,20 @@ export async function getStaticPaths() {
   const sections = Object.keys(site.sections) as SectionKey[];
   const paths = await Promise.all(
     sections.map(async (section) => {
-      const items = await getCollection(section, ({ data }) => import.meta.env.DEV || !data.draft);
+      // Projects with a `url` link out to another site, so they don't get a page here.
+      const items = await getCollection(section, ({ data }) => !data.url && (import.meta.env.DEV || !data.draft));
       return items.map((entry) => ({ params: { section, slug: entry.id }, props: { section, entry } }));
     }),
   );
   return paths.flat();
 }
 
-const { section, entry } = Astro.props;
+const { entry } = Astro.props;
 const { Content } = await render(entry);
-const copy = site.sections[section as SectionKey];
 ---
 
 <PageLayout title={entry.data.title} description={entry.data.summary}>
-  <a class="back" href={copy.href}>← {copy.title}</a>
+  <a class="back" href="/">← Home</a>
   <h1 class="title">{entry.data.title}</h1>
   <p class="tag"><em>{entry.data.tag}</em></p>
   <div class="prose">

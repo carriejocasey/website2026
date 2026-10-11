@@ -12,7 +12,7 @@ export const site = {
 
   about: {
     label: 'carrie noonan*',
-    lines: ['living the *dream*', '& making my own *luck*'],
+    lines: ['living the dream', '& making my own luck'],
   },
 
   role: {
@@ -21,8 +21,8 @@ export const site = {
   },
 
   sections: {
-    work: { eyebrow: '01 / WORK', title: 'Work samples' },
-    play: { eyebrow: '02 / PLAY', title: 'side Projects' },
+    work: { eyebrow: '01 / WORK', title: 'work samples' },
+    play: { eyebrow: '02 / PLAY', title: 'side projects' },
   },
 } as const;
 

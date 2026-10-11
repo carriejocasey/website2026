@@ -40,6 +40,7 @@ export function initHome() {
   const zones = new Map<string, HTMLElement>();
   stage.querySelectorAll<HTMLElement>('[data-zone]').forEach((el) => zones.set(el.dataset.zone!, el));
   const labels = [...stage.querySelectorAll<HTMLButtonElement>('button[data-trigger]')];
+  const sky = stage.querySelector<HTMLElement>('.photo');
 
   let state: HomeState = 'default';
   let pinned = false;
@@ -50,11 +51,31 @@ export function initHome() {
 
   // ---------------------------------------------------------------- state
 
+  /**
+   * What the sky's clip is doing right now. Opening work jumps the sky to full bleed and
+   * closing it holds the sky there for a beat (see "Sky behind the paper" in HomeStage.astro).
+   * Both tricks assume the sky is at rest; if it's still moving, freezing or jumping it mid-flight
+   * is what made hovers look abrupt, so CSS lets it keep animating instead.
+   *   moving   a real clip transition is underway
+   *   holding  the zero-length "wait, then jump" after work closed hasn't fired yet
+   *   still    at rest
+   */
+  function skyMotion(): 'moving' | 'holding' | 'still' {
+    let motion: 'moving' | 'holding' | 'still' = 'still';
+    for (const a of sky?.getAnimations() ?? []) {
+      if (!(a instanceof CSSTransition) || !a.transitionProperty.startsWith('--clip-') || a.playState !== 'running') continue;
+      if (Number(a.effect?.getTiming().duration) > 0) return 'moving';
+      motion = 'holding';
+    }
+    return motion;
+  }
+
   function set(next: HomeState) {
     window.clearTimeout(closeTimer);
     if (next === state) return;
-    // CSS uses the previous state to pick transitions that depend on where we came from.
+    // CSS uses the previous state, and whether the sky is mid-move, to pick transitions.
     stage!.dataset.prev = state;
+    stage!.dataset.sky = skyMotion();
     state = next;
     stage!.dataset.state = next;
     labels.forEach((b) => b.setAttribute('aria-expanded', String(b.dataset.trigger === next)));
@@ -219,7 +240,7 @@ export function initHome() {
       finishIntro();
     } else {
       stage.dataset.intro = 'play';
-      window.setTimeout(() => { ready = true; }, INTERACTIVE_MS);
+      window.setTimeout(() => { stage.dataset.intro = 'settle'; ready = true; }, INTERACTIVE_MS);
       window.setTimeout(finishIntro, INTRO_MS);
     }
   });

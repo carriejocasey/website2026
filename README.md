@@ -25,7 +25,7 @@ src/
   styles/tokens.css      colors, fonts, motion curves and durations
   components/home/
     HomeStage.astro      the home stage: every state's geometry, plus the intro
-    Section.astro        "Work samples" / "side Projects" heading + project list
+    Section.astro        "work samples" / "side projects" heading + project list
     HeaderCard.astro     "carrie noonan*" / "*designer, maker" glass cards
     SkyPhoto.astro       the sky photo layer
   scripts/home/
@@ -95,7 +95,7 @@ Design source: Figma file **New Site 2026** (frames 4:6, 4:44, 4:34, 7:314, 7:36
 - **Header cards.** "carrie noonan*" and "*designer, maker" behave identically: the label goes
   bold and the glass grows out of it. Closing runs the same path backwards and slower. On
   narrow screens, the other label steps aside while a card is open.
-- **Headings open, projects link.** "Work samples" and "side Projects" aren't links (there are no
+- **Headings open, projects link.** "work samples" and "side projects" aren't links (there are no
   /work or /play pages). They're buttons that open their card, and each project row links
   straight to its page. Project pages link back home.
 - **Touch.** Tapping a heading or header label toggles it. Tapping outside closes.

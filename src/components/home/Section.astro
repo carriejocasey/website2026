@@ -1,6 +1,6 @@
 ---
 /**
- * "01 / WORK  Work samples" and "02 / PLAY  side Projects".
+ * "01 / WORK  work samples" and "02 / PLAY  side projects".
  * The heading isn't a link; it opens the section (hover, focus, tap or Enter). Its card grows
  * around it and the project list rises in line by line. Each project links to its own page, or
  * out to another site (new tab, with a ↗ arrow) when its markdown sets `url`.
@@ -92,6 +92,7 @@ const listId = `${key}-projects`;
     display: flex;
     flex-direction: column;
     align-items: inherit;
+    gap: calc(var(--u) * 8);  /* between the eyebrow and the title */
     height: var(--head-h);   /* Figma "Title" frame is a fixed 144px */
     padding: 0;
     border: 0;

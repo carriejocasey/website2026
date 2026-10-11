@@ -76,13 +76,22 @@ const bodyId = `${key}-body`;
     -webkit-backdrop-filter: blur(var(--glass-blur));
     backdrop-filter: blur(var(--glass-blur));
     /* closed: a small rounded box around the label (the --ci-* values are measured in JS) */
-    clip-path: inset(var(--ci-t, 50%) var(--ci-r, 50%) var(--ci-b, 50%) var(--ci-l, 50%) round calc(var(--u) * 12));
+    --clip-t: var(--ci-t, 50%);
+    --clip-r: var(--ci-r, 50%);
+    --clip-b: var(--ci-b, 50%);
+    --clip-l: var(--ci-l, 50%);
+    --clip-round: calc(var(--u) * 12);
+    clip-path: inset(var(--clip-t) var(--clip-r) var(--clip-b) var(--clip-l) round var(--clip-round));   /* edge by edge: see "Card shapes" in HomeStage.astro */
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
     /* folds back into the label just after the lines start leaving, then fades out */
     transition:
-      clip-path var(--close) var(--close-ease) 0.08s,
+      --clip-t var(--close) var(--close-ease) 0.08s,
+      --clip-r var(--close) var(--close-ease) 0.08s,
+      --clip-b var(--close) var(--close-ease) 0.08s,
+      --clip-l var(--close) var(--close-ease) 0.08s,
+      --clip-round var(--close) var(--close-ease) 0.08s,
       opacity 0.25s linear calc(var(--close) - 0.12s),
       visibility 0s linear calc(var(--close) + 0.15s);
   }
@@ -143,11 +152,19 @@ const bodyId = `${key}-body`;
 
   :global([data-state="about"]) .hcard--about .hcard__panel,
   :global([data-state="role"]) .hcard--role .hcard__panel {
-    clip-path: inset(-12px -12px -12px -12px round calc(var(--u) * 24 + 12px));
+    --clip-t: -12px;
+    --clip-r: -12px;
+    --clip-b: -12px;
+    --clip-l: -12px;
+    --clip-round: calc(var(--u) * 24 + 12px);
     opacity: 1;
     visibility: visible;
     transition:
-      clip-path var(--dur-card) var(--ease-open),
+      --clip-t var(--dur-card) var(--ease-open),
+      --clip-r var(--dur-card) var(--ease-open),
+      --clip-b var(--dur-card) var(--ease-open),
+      --clip-l var(--dur-card) var(--ease-open),
+      --clip-round var(--dur-card) var(--ease-open),
       opacity 0.08s linear,
       visibility 0s;
   }

@@ -10,8 +10,8 @@
 
 @font-face { font-family: "CN Mono"; src: url("/fonts/atkinson-hyperlegible-mono-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "CN Mono"; src: url("/fonts/atkinson-hyperlegible-mono-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-display: swap; }
-@font-face { font-family: "CN Serif"; src: url("/fonts/instrument-serif-latin-400-normal.woff2") format("woff2"); font-style: normal; font-display: swap; }
-@font-face { font-family: "CN Serif"; src: url("/fonts/instrument-serif-latin-400-italic.woff2") format("woff2"); font-style: italic; font-display: swap; }
+/* The serif, Gambarino, loads from Fontshare (see BaseLayout.astro): its license doesn't allow
+   the font file in a public repo, but does allow serving it through Fontshare. */
 
 :root {
   color-scheme: light;
@@ -23,7 +23,8 @@
 
   /* ---- color ---- */
   --paper: #FAFAF7;
-  --grid-line: rgba(71, 69, 64, 0.13);   /* Figma: 0.5px at 30%; drawn here as 1px at 13% */
+  --grid-dot: rgba(71, 69, 64, 0.32);    /* dots carry less ink than lines, so they sit darker */
+  --grid-dot-r: 1.25px;
   --ink: #000000;
   --ink-soft: rgba(0, 0, 0, 0.55);
   --on-photo: #FFFFFF;
@@ -36,7 +37,7 @@
 
   /* ---- type ---- */
   --mono: "CN Mono", "Atkinson Hyperlegible Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --serif: "CN Serif", "Instrument Serif", "Times New Roman", serif;
+  --serif: "Gambarino", "Times New Roman", serif;
 
   /* ---- motion ----
      Opening is unhurried with a long, soft landing. Closing is quicker so the page

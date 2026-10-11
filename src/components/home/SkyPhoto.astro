@@ -39,8 +39,17 @@ import sky from '~/assets/sky.jpg';
     z-index: 1;
     overflow: hidden;
     background: var(--sky-base);
-    clip-path: var(--photo-clip);
-    transition: clip-path var(--photo-dur) var(--ease) var(--photo-delay);
+    /* shapes per state live in HomeStage.astro ("Card shapes" explains the edge-by-edge clip) */
+    --clip-t: var(--photo-t);
+    --clip-r: var(--photo-r);
+    --clip-b: var(--photo-b);
+    --clip-l: var(--photo-l);
+    --clip-round: var(--photo-rad);
+    clip-path: inset(var(--clip-t) var(--clip-r) var(--clip-b) var(--clip-l) round var(--clip-round));
+    transition-property: --clip-t, --clip-r, --clip-b, --clip-l, --clip-round;
+    transition-duration: var(--photo-dur);
+    transition-timing-function: var(--ease);
+    transition-delay: var(--photo-delay);
   }
 
   /* 1353 x 1015 in Figma, never smaller than the stage (with room for the per-state nudges). */

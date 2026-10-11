@@ -12,7 +12,7 @@ export const site = {
 
   about: {
     label: 'carrie noonan*',
-    lines: ['living the *dream*', '& making my own *luck*'],
+    lines: ['living the dream', '& making my own luck'],
   },
 
   role: {

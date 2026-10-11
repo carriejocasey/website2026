@@ -52,18 +52,18 @@ export function initHome() {
   // ---------------------------------------------------------------- state
 
   /**
-   * What the sky's clip-path is doing right now. Opening work jumps the sky to full bleed and
+   * What the sky's clip is doing right now. Opening work jumps the sky to full bleed and
    * closing it holds the sky there for a beat (see "Sky behind the paper" in HomeStage.astro).
    * Both tricks assume the sky is at rest; if it's still moving, freezing or jumping it mid-flight
    * is what made hovers look abrupt, so CSS lets it keep animating instead.
-   *   moving   a real clip-path transition is underway
+   *   moving   a real clip transition is underway
    *   holding  the zero-length "wait, then jump" after work closed hasn't fired yet
    *   still    at rest
    */
   function skyMotion(): 'moving' | 'holding' | 'still' {
     let motion: 'moving' | 'holding' | 'still' = 'still';
     for (const a of sky?.getAnimations() ?? []) {
-      if (!(a instanceof CSSTransition) || a.transitionProperty !== 'clip-path' || a.playState !== 'running') continue;
+      if (!(a instanceof CSSTransition) || !a.transitionProperty.startsWith('--clip-') || a.playState !== 'running') continue;
       if (Number(a.effect?.getTiming().duration) > 0) return 'moving';
       motion = 'holding';
     }
@@ -229,37 +229,9 @@ export function initHome() {
     delete stage!.dataset.intro;
     ready = true;
     measureClips();
-    whenSkySettled(warmUpClipAnimation);
     fromHash();
     // If the pointer is already resting on a heading, open it now.
     if (pointer) evaluate(pointer.x, pointer.y, document.elementFromPoint(pointer.x, pointer.y));
-  }
-
-  // The first clip-path animation after the live sky fades in makes the browser set itself up,
-  // and that stalls drawing for a few hundred ms: the first hover sat still, then jumped. So
-  // run one tiny clip-path animation ahead of it. It rounds the paper's outer corners by 1px,
-  // with the same paper showing underneath, so nothing visibly changes. Run any earlier (while
-  // the sky canvas is still fading in) and it doesn't take, so it waits for that to finish.
-  let warmed = false;
-  function warmUpClipAnimation() {
-    if (warmed || reducedMotion.matches) return;
-    warmed = true;
-    const sheet = stage!.querySelector<HTMLElement>('.sheet');
-    const rest = sheet && getComputedStyle(sheet).clipPath;
-    if (state !== 'default' || !sheet || !rest?.startsWith('inset(') || rest.includes('round')) return;
-    sheet.animate([{ clipPath: rest }, { clipPath: rest.replace(/\)$/, ' round 1px)') }], { duration: 120 });
-  }
-
-  /** Calls `fn` once the live sky canvas has faded in (or after 2s, if it never does). */
-  function whenSkySettled(fn: () => void) {
-    const canvas = stage!.querySelector<HTMLCanvasElement>('canvas[data-sky]');
-    const start = performance.now();
-    const check = () => {
-      const settled = !canvas?.isConnected || (canvas.classList.contains('is-live') && canvas.getAnimations().length === 0);
-      if (settled || performance.now() - start > 2000) fn();
-      else window.setTimeout(check, 50);
-    };
-    check();
   }
 
   assetsReady.then(() => {

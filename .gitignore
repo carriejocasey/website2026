@@ -3,3 +3,6 @@ dist/
 .astro/
 .DS_Store
 .env*
+
+# Licensed font downloads (Fontshare): not redistributable, keep out of the public repo
+/fonts/

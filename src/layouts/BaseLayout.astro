@@ -38,8 +38,10 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
 
     <!-- Fonts used above the fold. -->
     <link rel="preload" href="/fonts/atkinson-hyperlegible-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/newsreader-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- Gambarino (the serif) comes from Fontshare; see tokens.css. -->
+    <link rel="preconnect" href="https://api.fontshare.com" />
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=gambarino@400&display=swap" />
     <slot name="head" />
   </head>
   <body class={bodyClass}>

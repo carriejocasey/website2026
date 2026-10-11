@@ -10,8 +10,8 @@
 
 @font-face { font-family: "CN Mono"; src: url("/fonts/atkinson-hyperlegible-mono-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "CN Mono"; src: url("/fonts/atkinson-hyperlegible-mono-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-display: swap; }
-@font-face { font-family: "CN Serif"; src: url("/fonts/newsreader-latin-400-normal.woff2") format("woff2"); font-style: normal; font-display: swap; }
-@font-face { font-family: "CN Serif"; src: url("/fonts/newsreader-latin-400-italic.woff2") format("woff2"); font-style: italic; font-display: swap; }
+/* The serif, Gambarino, loads from Fontshare (see BaseLayout.astro): its license doesn't allow
+   the font file in a public repo, but does allow serving it through Fontshare. */
 
 :root {
   color-scheme: light;
@@ -37,7 +37,7 @@
 
   /* ---- type ---- */
   --mono: "CN Mono", "Atkinson Hyperlegible Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --serif: "CN Serif", "Newsreader", "Times New Roman", serif;
+  --serif: "Gambarino", "Times New Roman", serif;
 
   /* ---- motion ----
      Opening is unhurried with a long, soft landing. Closing is quicker so the page

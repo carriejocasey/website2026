@@ -38,6 +38,19 @@
   /* ---- type ---- */
   --mono: "CN Mono", "Atkinson Hyperlegible Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --serif: "Gambarino", "Times New Roman", serif;
+  --sans: "Work Sans", ui-sans-serif, system-ui, sans-serif;   /* case study body copy */
+
+  /* ---- case studies ---- */
+  --cs-text: #1B1F3A;
+  --cs-text-soft: #495073;
+  --cs-body: #262827;
+  --cs-accent-bg: #F1F0FF;
+  --cs-accent-edge: #BFBFFF;
+  --cs-accent-line: #A9A7F7;
+  --cs-panel: linear-gradient(to bottom, rgba(150, 195, 252, 0.5) 1.3%, rgba(116, 110, 241, 0.5));
+  --cs-radius: 24px;         /* the page card, purple figure cards, hero and outcome, solution panel */
+  --cs-radius-frame: 16px;   /* white frames inside a figure */
+  --cs-radius-image: 10px;   /* images inside those frames */
 
   /* ---- motion ----
      Opening is unhurried with a long, soft landing. Closing is quicker so the page

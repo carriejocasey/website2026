@@ -16,7 +16,7 @@ const { title, description } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description}>
-  <div class="page">
+  <div class="page paper-grid">
     <header class="page__header">
       <a class="page__home" href="/" style="view-transition-name: about-label">{site.about.label}</a>
       <span class="page__role" style="view-transition-name: role-label">{site.role.label}</span>
@@ -30,12 +30,7 @@ const { title, description } = Astro.props;
 <style>
   .page {
     --gutter: clamp(20px, 3.75vw, 48px);
-    --grid: 40px;
     min-height: 100dvh;
-    background-color: var(--paper);
-    background-image: radial-gradient(circle at var(--grid-dot-r) var(--grid-dot-r), var(--grid-dot) calc(var(--grid-dot-r) - 0.5px), transparent var(--grid-dot-r));
-    background-size: var(--grid) var(--grid);
-    background-attachment: fixed;
   }
 
   .page__header {

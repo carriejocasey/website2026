@@ -1,0 +1,205 @@
+---
+/**
+ * "03 / the solution": a list of solution areas beside a gradient panel showing the art for the
+ * selected one. It steps through the list on its own (each slide's `duration`), and clicking an
+ * item jumps straight to it. Behavior lives in src/scripts/case-study/rotator.ts.
+ *
+ * Pass each slide's art as a named slot: slide-0, slide-1, ... in the same order as `items`.
+ * Inside a slot, size things in Figma px with `calc(var(--p) * <px>)`: --p is one px of the
+ * 688px-wide Figma panel, so the art scales with the panel.
+ */
+interface Item {
+  title: string;
+  description: string;
+  /** How long this slide stays up before moving on, in ms. */
+  duration?: number;
+}
+
+interface Props {
+  id: string;
+  number: string;
+  title: string;
+  items: Item[];
+}
+
+const { id, number, title, items } = Astro.props;
+const slides = await Promise.all(items.map((_, i) => Astro.slots.render(`slide-${i}`)));
+---
+
+<section class="solution" data-rotator aria-labelledby={`${id}-title`}>
+  <div class="solution__side">
+    <h2 class="solution__head" id={`${id}-title`}>
+      <span class="solution__num">{number}</span>
+      <span class="solution__title">{title}</span>
+    </h2>
+    <div class="solution__list" role="tablist" aria-orientation="vertical" aria-label={title}>
+      {items.map((item, i) => (
+        <button
+          class="solution__item"
+          type="button"
+          role="tab"
+          id={`${id}-tab-${i}`}
+          aria-controls={`${id}-slide-${i}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+        >
+          <span class="solution__name">{item.title}</span>
+          <span class="solution__desc"><span class="solution__desc-inner">{item.description}</span></span>
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <div class="solution__panel">
+    {slides.map((html, i) => (
+      <div
+        class:list={['solution__slide', { 'is-active': i === 0 }]}
+        role="tabpanel"
+        id={`${id}-slide-${i}`}
+        aria-labelledby={`${id}-tab-${i}`}
+        aria-hidden={i === 0 ? undefined : 'true'}
+        data-duration={items[i].duration ?? 6000}
+        set:html={html}
+      />
+    ))}
+  </div>
+</section>
+
+<script>
+  import { initRotators } from '~/scripts/case-study/rotator';
+  initRotators();
+</script>
+
+<style>
+  .solution {
+    display: flex;
+    align-items: flex-start;
+    gap: 48px;
+    padding-left: 16px;
+  }
+
+  .solution__side {
+    flex: 0 0 328px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .solution__head {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    font-weight: 400;
+    line-height: normal;
+  }
+  .solution__num { font-family: var(--mono); font-size: 18px; color: var(--cs-text-soft); }
+  .solution__title { font-family: var(--serif); font-size: 40px; }
+
+  .solution__list { display: flex; flex-direction: column; gap: 16px; }
+
+  .solution__item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 12px 12px 12px 16px;
+    border: 0;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+  }
+  /* The 4px bar beside the selected item, drawn separately so its ends can be round. */
+  .solution__item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: 2px;
+    background: transparent;
+    transition: background-color 0.4s var(--ease-text);
+  }
+  .solution__item:hover::before { background: color-mix(in srgb, var(--cs-accent-line) 40%, transparent); }
+  .solution__item[aria-selected="true"] { cursor: default; }
+  .solution__item[aria-selected="true"]::before { background: var(--cs-accent-line); }
+  .solution__item:focus-visible { outline-offset: 0; }
+
+  .solution__name {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 18px;
+    line-height: normal;
+    color: var(--cs-text);
+  }
+
+  /* The description opens under the selected item. */
+  .solution__desc {
+    display: grid;
+    grid-template-rows: 0fr;
+    margin-top: 0;
+    opacity: 0;
+    transition: grid-template-rows var(--dur-close) var(--ease-close), margin-top var(--dur-close) var(--ease-close), opacity 0.3s linear;
+  }
+  .solution__desc-inner {
+    overflow: hidden;
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.4;
+    color: var(--cs-body);
+  }
+  .solution__item[aria-selected="true"] .solution__desc {
+    grid-template-rows: 1fr;
+    margin-top: 8px;
+    opacity: 1;
+    transition: grid-template-rows var(--dur-open) var(--ease-open), margin-top var(--dur-open) var(--ease-open), opacity 0.5s linear 0.15s;
+  }
+
+  .solution__panel {
+    --p: calc(100cqw / 688);
+    flex: 0 1 688px;
+    min-width: 0;
+    container-type: inline-size;
+    display: grid;
+    aspect-ratio: 688 / 568;
+    overflow: hidden;
+    border-radius: var(--cs-radius);
+    background: var(--cs-panel);
+  }
+
+  /* All slides share one cell and cross-fade. */
+  .solution__slide {
+    grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(calc(var(--p) * 12)) scale(0.985);
+    transition:
+      opacity var(--dur-close) var(--ease-close),
+      transform var(--dur-close) var(--ease-close),
+      visibility 0s linear var(--dur-close);
+  }
+  .solution__slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      opacity var(--dur-open) var(--ease-open) 0.1s,
+      transform var(--dur-open) var(--ease-open) 0.1s,
+      visibility 0s;
+  }
+
+  /* Stacked, the art goes between the heading and the list, so opening a description never
+     pushes it around. */
+  @media (max-width: 960px) {
+    .solution { flex-direction: column; align-items: stretch; gap: 24px; padding-left: 0; }
+    .solution__side { display: contents; }
+    .solution__head { padding: 0 4px; }
+    .solution__title { font-size: 34px; }
+    .solution__panel { order: 1; flex: none; width: 100%; }
+    .solution__list { order: 2; }
+  }
+</style>

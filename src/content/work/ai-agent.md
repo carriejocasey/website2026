@@ -1,5 +1,5 @@
 ---
-title: AI agent 0-1
+title: AI Agent 0-1
 tag: Lattice
 order: 3
 ---

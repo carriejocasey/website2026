@@ -1,0 +1,388 @@
+---
+/**
+ * Case study: Navigation & Platform Redesign (Lattice).
+ * Figma "New Site 2026": page 14:384, solution slides 53:20496.
+ * Images live in src/assets/work/platform-redesign; the hero reveal and outcome demo are MP4s
+ * in public/work/platform-redesign.
+ */
+import { Image } from 'astro:assets';
+import CaseSection from '~/components/case-study/CaseSection.astro';
+import Figure from '~/components/case-study/Figure.astro';
+import SolutionRotator from '~/components/case-study/SolutionRotator.astro';
+import AutoVideo from '~/components/case-study/AutoVideo.astro';
+
+import navAudit from '~/assets/work/platform-redesign/fig-nav-audit.png';
+import mentalModel from '~/assets/work/platform-redesign/fig-mental-model.png';
+import leftNav from '~/assets/work/platform-redesign/solution-left-nav.png';
+import globalNav from '~/assets/work/platform-redesign/solution-global-nav.png';
+import iaMyTeam from '~/assets/work/platform-redesign/ia-my-team.png';
+import iaMyUpdates from '~/assets/work/platform-redesign/ia-my-updates.png';
+import iaTeamUpdates from '~/assets/work/platform-redesign/ia-team-updates.png';
+import iaLine1 from '~/assets/work/platform-redesign/ia-line-1.svg?url';
+import iaLine2 from '~/assets/work/platform-redesign/ia-line-2.svg?url';
+import iaLine3 from '~/assets/work/platform-redesign/ia-line-3.svg?url';
+import patternsHeaders from '~/assets/work/platform-redesign/patterns-headers.png';
+import patternsProps1 from '~/assets/work/platform-redesign/patterns-props-1.png';
+import patternsProps2 from '~/assets/work/platform-redesign/patterns-props-2.png';
+import modalReviews from '~/assets/work/platform-redesign/modal-reviews.png';
+import modalEngagement from '~/assets/work/platform-redesign/modal-engagement.png';
+import modalGoals from '~/assets/work/platform-redesign/modal-goals.png';
+import visual1 from '~/assets/work/platform-redesign/visual-1.png';
+import visual2 from '~/assets/work/platform-redesign/visual-2.png';
+import heroPoster from '~/assets/work/platform-redesign/hero-poster.png';
+import outcomePoster from '~/assets/work/platform-redesign/outcome-poster.png';
+import response1 from '~/assets/work/platform-redesign/response-1.png';
+import response2 from '~/assets/work/platform-redesign/response-2.png';
+import response3 from '~/assets/work/platform-redesign/response-3.png';
+import response4 from '~/assets/work/platform-redesign/response-4.png';
+import response5 from '~/assets/work/platform-redesign/response-5.png';
+
+const solutions = [
+  {
+    title: 'Left navigation',
+    description: 'Reorganize the left navigation to create a clearer, more intuitive organization of products with a consistent visual style.',
+  },
+  {
+    title: 'Global navigation',
+    description: 'Place the Lattice Agent at the top of every page to enable instant, cross product search and AI support.',
+  },
+  {
+    title: 'Information architecture',
+    description: 'Establish standardized navigation patterns and rework the information architecture to reduce duplicative entry points.',
+  },
+  {
+    title: 'Consistent patterns',
+    description: 'Introduce standardized on-page navigation elements, including headers, tabs, breadcrumbs, drilldowns, and page specific navigation.',
+  },
+  {
+    title: 'Fullscreen modal deprecation',
+    description: 'Migrate fullscreen modal experiences into the new system to improve usability across complex workflows like Goals, Reviews, and Grow.',
+    // Long enough for the three screens to scroll past.
+    duration: 9000,
+  },
+  {
+    title: 'Visual design',
+    description: 'Elevate and modernize the product’s visual language to feel lighter, more cohesive, and aligned with Lattice’s evolving brand.',
+  },
+];
+---
+
+<header class="intro">
+  <h1 class="intro__title">Navigation &amp; Platform Redesign</h1>
+  <p class="intro__lede">
+    I led the redesign of Lattice’s navigation and information architecture to address long-standing usability issues and modernize the platform’s structural and visual foundations.
+  </p>
+</header>
+
+<div class="hero">
+  <AutoVideo
+    src="/work/platform-redesign/hero.mp4"
+    poster={heroPoster}
+    width={1080}
+    label="The redesigned Lattice home page, with the new left navigation and the Ask Lattice bar across the top."
+  />
+</div>
+
+<CaseSection number="01" title="the context">
+  <p>Lattice’s design language had not meaningfully evolved since 2020, and fullscreen modals and inconsistent headers made it hard for users to orient themselves. The launch of Lattice Assistant made the gaps impossible to ignore: the system was not equipped to support a pervasive AI experience. I designed a North Star vision and presented it to EPD leadership, securing approval for a platform redesign.</p>
+</CaseSection>
+
+<CaseSection number="02" title="the approach">
+  <p>I audited left-hand navigation across IC and Manager experiences, then partnered with UXR on an open card sort with 18 participants to study how managers mentally organize HR data. Mapping the results into audience-based and product-based models focused our IA work on three questions: how to group the left nav, how “My Team” should evolve for managers, and how to standardize on-page patterns.</p>
+</CaseSection>
+
+<div class="figs">
+  <Figure caption="FIG. 01 · Left-nav audit across experiences">
+    <div class="frame figs__frame figs__frame--audit">
+      <Image src={navAudit} width={476} densities={[1, 2]} alt="An audit of the left navigation items across the IC and Manager experiences." />
+    </div>
+  </Figure>
+  <Figure caption="FIG. 02 · Mental model mapping">
+    <div class="frame figs__frame figs__frame--model">
+      <Image src={mentalModel} width={458} densities={[1, 2]} alt="Card sort results mapped into audience-based and product-based models." />
+    </div>
+  </Figure>
+</div>
+
+<SolutionRotator id="solution" number="03" title="the solution" items={solutions}>
+  <Image slot="slide-0" class="art art--left-nav" src={leftNav} width={441} densities={[1, 2]} alt="The left navigation before the redesign, a dark sidebar, beside the lighter, regrouped navigation after it." />
+  <Image slot="slide-1" class="art art--global-nav" src={globalNav} width={650} densities={[1, 2]} alt="The new global navigation bar with Ask Lattice search in the middle, above the left navigation and the company and profile menus." />
+  <div slot="slide-2" class="art ia">
+    <Image class="ia__team" src={iaMyTeam} width={415} densities={[1, 2]} alt="The new My Team page for managers, with team sentiment, people and links into each team tool." />
+    <Image class="ia__mine" src={iaMyUpdates} width={320} densities={[1, 2]} alt="Updates, opened from the left navigation on the My updates tab." />
+    <Image class="ia__theirs" src={iaTeamUpdates} width={320} densities={[1, 2]} alt="Updates on the Team updates tab, reached from My Team." />
+    <span class="ia__mark ia__mark--1"></span>
+    <span class="ia__mark ia__mark--2"></span>
+    <span class="ia__mark ia__mark--3"></span>
+    <img class="ia__line ia__line--1" src={iaLine1} alt="" />
+    <img class="ia__line ia__line--2" src={iaLine2} alt="" />
+    <img class="ia__line ia__line--3" src={iaLine3} alt="" />
+  </div>
+
+  <div slot="slide-3" class="art patterns">
+    <Image class="patterns__main" src={patternsHeaders} width={489} densities={[1, 2]} alt="Page header variants: default, with breadcrumbs, employee and company." />
+    <div class="patterns__side">
+      <Image src={patternsProps1} width={133} densities={[1, 2]} alt="Page header component properties." />
+      <Image src={patternsProps2} width={133} densities={[1, 2]} alt="Page header type options: drilldown, main, profile and company." />
+    </div>
+  </div>
+
+  <div slot="slide-4" class="art modals">
+    <div class="modals__stack">
+      <Image src={modalReviews} width={600} densities={[1, 2]} alt="Performance reviews, moved out of a fullscreen modal into the new page layout." />
+      <Image src={modalEngagement} width={600} densities={[1, 2]} alt="An engagement survey in the new page layout." />
+      <Image src={modalGoals} width={600} densities={[1, 2]} alt="Goals in the new page layout." />
+    </div>
+  </div>
+
+  <div slot="slide-5" class="art visual">
+    <Image class="visual__back" src={visual1} width={444} densities={[1, 2]} alt="The redesigned home page with the lighter visual style." />
+    <Image class="visual__front" src={visual2} width={444} densities={[1, 2]} alt="A page template in the new visual style." />
+  </div>
+</SolutionRotator>
+
+<CaseSection number="04" title="the outcome">
+  <p>The redesign prioritized clarity and intent over raw traffic. Key actions and in-product usage remained largely unchanged as users relearned the navigation, and users consistently describe the new UI as cleaner, more modern, and easier to orient once familiar. Most importantly, standardized navigation patterns, layouts, and hierarchy gave Lattice a foundation for embedding AI not as a feature, but as a core platform capability.</p>
+</CaseSection>
+
+<div class="outcome">
+  <AutoVideo
+    src="/work/platform-redesign/outcome.mp4"
+    poster={outcomePoster}
+    width={1080}
+    label="A walkthrough of the redesigned Lattice platform."
+  />
+</div>
+
+<Figure caption="FIG. 03 · Customer response after GA" class="responses">
+  <div class="responses__row">
+    <div class="frame responses__card" style="--share: 492">
+      <Image class="responses__r1" src={response1} width={458} densities={[1, 2]} alt="Customer feedback on the redesign." />
+      <div class="crop responses__r2">
+        <Image src={response2} width={852} densities={[1, 2]} alt="Customer feedback on the redesign." />
+        <span class="redact responses__r2-redact"></span>
+      </div>
+    </div>
+    <div class="frame responses__card" style="--share: 540">
+      <div class="crop responses__r3">
+        <Image src={response3} width={582} densities={[1, 2]} alt="Customer feedback on the redesign." />
+        <span class="redact responses__r3-redact"></span>
+      </div>
+    </div>
+  </div>
+  <div class="responses__row">
+    <div class="frame responses__card" style="--share: 414">
+      <div class="crop responses__r4">
+        <Image src={response4} width={396} densities={[1, 2]} alt="Customer feedback on the redesign." />
+      </div>
+    </div>
+    <div class="frame responses__card" style="--share: 618">
+      <div class="crop responses__r5">
+        <Image src={response5} width={584} densities={[1, 2]} alt="Customer feedback on the redesign." />
+        <span class="redact responses__r5-redact"></span>
+      </div>
+    </div>
+  </div>
+</Figure>
+
+<style>
+  img { height: auto; }
+
+  /* ---- intro ---- */
+  .intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+  }
+  .intro__title {
+    margin: 0;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(44px, 6.25vw, 80px);
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+  /* Same size as the section copy (CaseSection.astro), 18px when that stacks. */
+  .intro__lede {
+    margin: 0;
+    max-width: 760px;
+    font-size: 20px;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+  @media (max-width: 860px) {
+    .intro__lede { font-size: 18px; }
+  }
+
+  /* The recording has dark window corners; a 24px radius always covers them (they're ~12px
+     at full width and shrink with the video). Rounded on the wrapper and the video, since
+     Safari can drop a video's own radius while it plays. */
+  .hero {
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: var(--cs-radius);
+  }
+  .hero :global(video) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2300 / 1408;
+    border-radius: var(--cs-radius);
+  }
+
+  /* ---- FIG. 01 + 02 ---- */
+  .figs { display: flex; gap: 32px; }
+  .figs > :global(*) { flex: 1 1 0; }
+  .figs__frame { height: 351px; display: flex; justify-content: center; }
+  .figs__frame--audit { padding: 7px; }
+  .figs__frame--audit img { width: 100%; border-radius: var(--cs-radius-image); }
+  .figs__frame--model { padding: 16px; }
+  .figs__frame--model img { width: 100%; border-radius: var(--cs-radius-image); }
+
+  /* ---- solution art (sizes are Figma px of the 688px panel; see SolutionRotator) ---- */
+  .art--left-nav { width: calc(var(--p) * 441.1); }
+  .art--global-nav { width: calc(var(--p) * 646.4); }
+
+  /* Information architecture: the same Updates page reached two ways, with the paths drawn on.
+     Everything sits on the 688 x 545 Figma frame (53:13758). */
+  .ia {
+    position: relative;
+    width: calc(var(--p) * 688);
+    height: calc(var(--p) * 545);
+  }
+  .ia > * { position: absolute; }
+  .ia__team { left: calc(var(--p) * 136.5); top: calc(var(--p) * 20.5); width: calc(var(--p) * 415); aspect-ratio: 415 / 279; object-fit: cover; }
+  .ia__mine { left: calc(var(--p) * 16.4); top: calc(var(--p) * 309.5); width: calc(var(--p) * 320); aspect-ratio: 320 / 215; object-fit: cover; }
+  .ia__theirs { left: calc(var(--p) * 352.8); top: calc(var(--p) * 309.5); width: calc(var(--p) * 320); aspect-ratio: 320 / 215; object-fit: cover; }
+  .ia__mark {
+    border: calc(var(--p) * 0.82) solid #8BFAED;
+    border-radius: calc(var(--p) * 1.64);
+  }
+  .ia__mark--1 { left: calc(var(--p) * 141); top: calc(var(--p) * 106); width: calc(var(--p) * 61); height: calc(var(--p) * 11); }
+  .ia__mark--2 { left: calc(var(--p) * 418.16); top: calc(var(--p) * 261.85); width: calc(var(--p) * 93.39); height: calc(var(--p) * 16.79); }
+  .ia__mark--3 { left: calc(var(--p) * 95); top: calc(var(--p) * 345); width: calc(var(--p) * 27.03); height: calc(var(--p) * 9.42); }
+  /* Each line's box is its SVG's own size (see the files' width and height). */
+  .ia__line--1 { left: calc(var(--p) * 8.59); top: calc(var(--p) * 110.6); width: calc(var(--p) * 132.41); height: calc(var(--p) * 254.426); }
+  .ia__line--2 { left: calc(var(--p) * 441.99); top: calc(var(--p) * 269.59); width: calc(var(--p) * 86.4259); height: calc(var(--p) * 76.8192); }
+  .ia__line--3 { left: calc(var(--p) * 109.6); top: calc(var(--p) * 331.59); width: calc(var(--p) * 338.426); height: calc(var(--p) * 14.5806); }
+
+  .patterns {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--p) * 18);
+    width: calc(var(--p) * 639.2);
+  }
+  .patterns__main {
+    flex: 1 1 0;
+    min-width: 0;
+    aspect-ratio: 867 / 601;
+    object-fit: cover;
+    border-radius: calc(var(--p) * 6.76);
+    box-shadow: var(--shadow);
+  }
+  .patterns__side { display: flex; flex-direction: column; gap: calc(var(--p) * 9); }
+  .patterns__side img {
+    width: calc(var(--p) * 132.9);
+    aspect-ratio: 132.9 / 130.1;
+    object-fit: cover;
+    border-radius: calc(var(--p) * 4.5);
+    box-shadow: var(--shadow);
+  }
+
+  /* Three full pages, taller than the panel: they scroll up slowly while the slide is showing. */
+  .modals {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: stretch;
+    height: 100%;
+    padding-top: calc(var(--p) * 24);
+  }
+  .modals__stack {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--p) * 24);
+    width: calc(var(--p) * 600);
+  }
+  .modals__stack img { width: 100%; aspect-ratio: 1300 / 872; object-fit: cover; }
+  :global(.is-active) .modals__stack { animation: modals-scroll 7s cubic-bezier(0.45, 0, 0.25, 1) 1.2s both; }
+  @keyframes modals-scroll {
+    to { transform: translateY(calc(var(--p) * (568 - 24 - 24 - 1252))); }
+  }
+
+  .visual { display: grid; }
+  .visual img {
+    grid-area: 1 / 1;
+    width: calc(var(--p) * 444.1);
+    aspect-ratio: 444.1 / 277.5;
+    object-fit: cover;
+  }
+  .visual__back { box-shadow: var(--shadow); }
+  .visual__front {
+    margin: calc(var(--p) * 216.3) 0 0 calc(var(--p) * 195.9);
+    box-shadow: 0 3px 13px rgba(27, 31, 58, 0.16), 0 2px 3px rgba(27, 31, 58, 0.08);
+  }
+
+  /* ---- outcome ---- */
+  .outcome { overflow: hidden; border-radius: var(--cs-radius); }
+  .outcome :global(video) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1135 / 847;
+    object-fit: cover;
+    border-radius: var(--cs-radius);
+    box-shadow: var(--shadow);
+  }
+
+  /* ---- FIG. 03: customer quotes, with names blurred out ---- */
+  .responses__row { display: flex; gap: 16px; }
+  .responses__card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px;
+    /* Cards split each row in their Figma widths (--share), and everything inside scales with
+       the card, so the row can shrink without cutting anything off. */
+    flex: var(--share) 1 0;
+    min-width: 0;
+  }
+
+  /* A fixed window onto part of a screenshot; the image inside is sized and offset in % of it. */
+  .crop { position: relative; overflow: hidden; border-radius: var(--cs-radius-image); }
+  .crop img { position: absolute; max-width: none; }
+  .redact {
+    position: absolute;
+    backdrop-filter: blur(7.5px);
+    -webkit-backdrop-filter: blur(7.5px);
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+  }
+
+  .responses__r1 { width: 100%; aspect-ratio: 561 / 83; border-radius: var(--cs-radius-image); }
+  .responses__r2 { width: 100%; aspect-ratio: 561 / 109; border: 1px solid #DBE2EE; }
+  .responses__r2 img { left: 0; top: 0; width: 186.13%; height: 129.2%; }
+  .responses__r2-redact { left: 0; top: 0; width: 73.08%; height: 46%; border-radius: 8px; }
+
+  .responses__r3 { width: 100%; aspect-ratio: 506 / 185; }
+  .responses__r3 img { left: -9.62%; top: -68.42%; width: 114.9%; height: 186.29%; }
+  .responses__r3-redact { left: 83.2%; top: 9.7%; width: 15%; height: 11.4%; backdrop-filter: blur(3.5px); background: rgba(255, 255, 255, 0.7); }
+
+  .responses__r4 { width: 100%; aspect-ratio: 396 / 138; }
+  .responses__r4 img { left: 0; top: -3.39%; width: 100%; height: 103.43%; }
+
+  .responses__r5 { width: 100%; aspect-ratio: 584 / 115; }
+  .responses__r5 img { inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .responses__r5-redact { left: 36.99%; top: 24.35%; width: 20.55%; height: 20.87%; backdrop-filter: blur(3.5px); background: rgba(255, 255, 255, 0.7); }
+
+  @media (max-width: 860px) {
+    .figs { flex-direction: column; gap: 24px; }
+    .responses__row { flex-direction: column; }
+    .responses__card { flex: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.is-active) .modals__stack { animation: none; }
+  }
+</style>

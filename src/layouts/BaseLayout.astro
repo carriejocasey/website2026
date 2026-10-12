@@ -7,15 +7,17 @@ interface Props {
   description?: string;
   /** Extra class on <body>, e.g. to lock scrolling on the home stage. */
   bodyClass?: string;
+  /** Extra class on <html>, e.g. to style page transitions into this page. */
+  htmlClass?: string;
 }
 
-const { title, description = site.description, bodyClass } = Astro.props;
+const { title, description = site.description, bodyClass, htmlClass } = Astro.props;
 const fullTitle = title ? `${title} — ${site.name}` : site.title;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class={htmlClass}>
   <head>
     <meta charset="utf-8" />
     <script is:inline>

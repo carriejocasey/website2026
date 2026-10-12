@@ -1,0 +1,70 @@
+---
+/**
+ * A silent, looping demo video that stands in for a GIF. Nothing downloads until it's near the
+ * screen; it plays while visible and pauses when scrolled away. People who ask for reduced
+ * motion get the poster with play controls instead.
+ */
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: string;
+  poster: ImageMetadata;
+  /** Display width in CSS px, used to size the poster. */
+  width: number;
+  label: string;
+  class?: string;
+}
+
+const { src, poster, width, label, class: className } = Astro.props;
+const posterImage = await getImage({ src: poster, width: width * 2, format: 'webp' });
+---
+
+<video
+  class:list={['auto-video', className]}
+  data-auto-video
+  data-src={src}
+  poster={posterImage.src}
+  width={poster.width}
+  height={poster.height}
+  muted
+  loop
+  playsinline
+  preload="none"
+  aria-label={label}
+></video>
+
+<script>
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+  document.querySelectorAll<HTMLVideoElement>('video[data-auto-video]').forEach((video) => {
+    const load = () => {
+      if (!video.src) video.src = video.dataset.src ?? '';
+    };
+
+    if (reducedMotion.matches) {
+      video.controls = true;
+      video.preload = 'metadata';
+      load();
+      return;
+    }
+
+    // Start fetching a screen ahead, play only while at least a third of it is showing.
+    new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) load();
+    }, { rootMargin: '100% 0px' }).observe(video);
+
+    new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        load();
+        video.play().catch(() => { video.controls = true; });
+      } else {
+        video.pause();
+      }
+    }, { threshold: 0.33 }).observe(video);
+  });
+</script>
+
+<style>
+  .auto-video { display: block; width: 100%; height: auto; }
+</style>

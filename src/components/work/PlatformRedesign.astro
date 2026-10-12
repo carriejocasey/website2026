@@ -204,12 +204,16 @@ const solutions = [
     line-height: 1.1;
     text-wrap: balance;
   }
+  /* Same size as the section copy (CaseSection.astro), 18px when that stacks. */
   .intro__lede {
     margin: 0;
     max-width: 760px;
-    font-size: clamp(19px, 1.9vw, 24px);
-    line-height: 1.4;
+    font-size: 20px;
+    line-height: 1.5;
     text-wrap: pretty;
+  }
+  @media (max-width: 860px) {
+    .intro__lede { font-size: 18px; }
   }
 
   /* The recording has dark window corners; a 24px radius always covers them (they're ~12px

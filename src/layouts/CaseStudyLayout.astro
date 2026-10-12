@@ -16,7 +16,7 @@ interface Props {
 const { title, description, next } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} htmlClass="case-study">
   <Fragment slot="head">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -81,4 +81,14 @@ const { title, description, next } = Astro.props;
     font-family: var(--sans);
   }
   .cs__card > :global(*) { width: 100%; max-width: var(--cs-col); }
+</style>
+
+<style is:global>
+  /* Arriving on a case study cuts straight to it. The site-wide cross-fade (base.css) keeps the
+     old page up underneath, and here that let home's sky, headings and corner labels show
+     through the new page mid-fade, which read as a flash. The transition is styled by the page
+     being opened, so this only applies on the way into a case study. */
+  .case-study::view-transition-old(*) { animation: none; opacity: 0; }
+  .case-study::view-transition-new(*) { animation: none; }
+  .case-study::view-transition-group(*) { animation: none; }
 </style>

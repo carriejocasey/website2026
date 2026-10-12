@@ -24,7 +24,7 @@ const { caption, class: className } = Astro.props;
     margin: 0;
     padding: 16px;
     background: var(--cs-accent-bg);
-    border-radius: 24px;
+    border-radius: var(--cs-radius);
     min-width: 0;
   }
   .figure__caption {
@@ -37,6 +37,6 @@ const { caption, class: className } = Astro.props;
     overflow: hidden;
     background: #fff;
     border: 1px solid var(--cs-accent-edge);
-    border-radius: 16px;
+    border-radius: var(--cs-radius-frame);
   }
 </style>

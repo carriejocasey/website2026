@@ -222,13 +222,13 @@ const solutions = [
   .hero {
     overflow: hidden;
     isolation: isolate;
-    border-radius: 24px;
+    border-radius: var(--cs-radius);
   }
   .hero :global(video) {
     width: 100%;
     height: auto;
     aspect-ratio: 2300 / 1408;
-    border-radius: 24px;
+    border-radius: var(--cs-radius);
   }
 
   /* ---- FIG. 01 + 02 ---- */
@@ -236,9 +236,9 @@ const solutions = [
   .figs > :global(*) { flex: 1 1 0; }
   .figs__frame { height: 351px; display: flex; justify-content: center; }
   .figs__frame--audit { padding: 7px; }
-  .figs__frame--audit img { width: 100%; border-radius: 5px; }
+  .figs__frame--audit img { width: 100%; border-radius: var(--cs-radius-image); }
   .figs__frame--model { padding: 16px; }
-  .figs__frame--model img { width: 100%; }
+  .figs__frame--model img { width: 100%; border-radius: var(--cs-radius-image); }
 
   /* ---- solution art (sizes are Figma px of the 688px panel; see SolutionRotator) ---- */
   .art--left-nav { width: calc(var(--p) * 441.1); }
@@ -325,13 +325,13 @@ const solutions = [
   }
 
   /* ---- outcome ---- */
-  .outcome { overflow: hidden; border-radius: 24px; }
+  .outcome { overflow: hidden; border-radius: var(--cs-radius); }
   .outcome :global(video) {
     width: 100%;
     height: auto;
     aspect-ratio: 1135 / 847;
     object-fit: cover;
-    border-radius: 16px;
+    border-radius: var(--cs-radius);
     box-shadow: var(--shadow);
   }
 
@@ -343,7 +343,6 @@ const solutions = [
     justify-content: center;
     gap: 10px;
     padding: 16px;
-    border-radius: 12px;
     /* Cards split each row in their Figma widths (--share), and everything inside scales with
        the card, so the row can shrink without cutting anything off. */
     flex: var(--share) 1 0;
@@ -351,7 +350,7 @@ const solutions = [
   }
 
   /* A fixed window onto part of a screenshot; the image inside is sized and offset in % of it. */
-  .crop { position: relative; overflow: hidden; }
+  .crop { position: relative; overflow: hidden; border-radius: var(--cs-radius-image); }
   .crop img { position: absolute; max-width: none; }
   .redact {
     position: absolute;
@@ -361,8 +360,8 @@ const solutions = [
     border-radius: 4px;
   }
 
-  .responses__r1 { width: 100%; aspect-ratio: 561 / 83; border-radius: 4px; }
-  .responses__r2 { width: 100%; aspect-ratio: 561 / 109; border: 1px solid #DBE2EE; border-radius: 8px; }
+  .responses__r1 { width: 100%; aspect-ratio: 561 / 83; border-radius: var(--cs-radius-image); }
+  .responses__r2 { width: 100%; aspect-ratio: 561 / 109; border: 1px solid #DBE2EE; }
   .responses__r2 img { left: 0; top: 0; width: 186.13%; height: 129.2%; }
   .responses__r2-redact { left: 0; top: 0; width: 73.08%; height: 46%; border-radius: 8px; }
 
@@ -370,7 +369,7 @@ const solutions = [
   .responses__r3 img { left: -9.62%; top: -68.42%; width: 114.9%; height: 186.29%; }
   .responses__r3-redact { left: 83.2%; top: 9.7%; width: 15%; height: 11.4%; backdrop-filter: blur(3.5px); background: rgba(255, 255, 255, 0.7); }
 
-  .responses__r4 { width: 100%; aspect-ratio: 396 / 138; border-radius: 8px; }
+  .responses__r4 { width: 100%; aspect-ratio: 396 / 138; }
   .responses__r4 img { left: 0; top: -3.39%; width: 100%; height: 103.43%; }
 
   .responses__r5 { width: 100%; aspect-ratio: 584 / 115; }

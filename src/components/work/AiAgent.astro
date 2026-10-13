@@ -1,0 +1,164 @@
+---
+/**
+ * Case study: AI Agent 0-1 (Lattice).
+ * Figma "New Site 2026": page 67:2522, sequencing slides 68:5275.
+ * Images live in src/assets/work/ai-agent; the animated sequencing screens are in
+ * public/work/ai-agent.
+ *
+ * `.pending` boxes hold the place of art that hasn't been exported yet, at its Figma size.
+ */
+import { Image } from 'astro:assets';
+import CaseIntro from '~/components/case-study/CaseIntro.astro';
+import CaseSection from '~/components/case-study/CaseSection.astro';
+import Figure from '~/components/case-study/Figure.astro';
+import SolutionRotator from '~/components/case-study/SolutionRotator.astro';
+
+import figAlpha from '~/assets/work/ai-agent/fig-alpha.png';
+
+const milestones = [
+  {
+    title: 'North Star',
+    description: 'Embed AI across Lattice with an always-available Assistant, rethink navigation and information architecture, and modernize the visual system.',
+  },
+  {
+    title: 'Milestones 1 & 2',
+    description: 'Move Lattice search into a new top bar on Home. Combine search and Ask Lattice into a single, unified top bar experience.',
+  },
+  {
+    title: 'Milestone 2 fast follows',
+    description: 'Introduce chat history and threaded conversations. Surface user-friendly tool calls to indicate thinking progress to user.',
+  },
+  {
+    title: 'Milestone 3',
+    description: 'Expand Search & Ask Lattice to all product pages and ensure responsive behavior across break points. Add contextual greetings and AI suggestions to reduce cold starts.',
+  },
+];
+
+const idles = ['Control', 'Simple Rotation', 'Basic Hula', 'Basic Hula Halftime', 'Dramatic Hula'];
+---
+
+<CaseIntro title="AI Agent 0-1">
+  I led the 0→1 design of Lattice’s AI Agent from concept to launch, making company knowledge instantly accessible to reduce HR overhead and laying the foundation for future AI capabilities.
+</CaseIntro>
+
+<div class="hero">
+  <div class="pending hero__art"><span>hero · Home with Ask Lattice open</span></div>
+</div>
+
+<CaseSection number="01" title="the context">
+  <p>Company knowledge was fragmented across tools, and employees and managers struggled to get timely, trustworthy guidance. HR teams were overwhelmed by repetitive questions, creating an opportunity for Lattice to shift its AI strategy from simple novelty to solving core user problems.</p>
+  <p>I led the 0→1 design of Lattice’s AI Agent, defining the MVP from concept to launch, including brand identity and interaction design. The goal was to make company knowledge instantly accessible, reduce HR overhead, and build trust in AI. With no existing conversational AI in Lattice and an engineering team relatively new to building AI systems, we needed real user data quickly to improve prompts and output quality.</p>
+</CaseSection>
+
+<CaseSection number="02" title="the approach">
+  <p>I partnered with UXR to assess HR buyers’ perceptions of AI, trust, and willingness to pay. This validated the HR Help Desk as a solid starting point to build trust in AI before monetizing. With PM, I narrowed the scope and defined a phased rollout for three core MVP experiences: the Q&amp;A chat experience, company knowledge vault, and agent training center.</p>
+  <p>Testing a barebones alpha with five “friendlies” customers helped us refine UX and prompt quality as I iterated on entry points and agent branding. Usability testing revealed confusion between Lattice Assistant and the Customer Care chatbot, and executive feedback prompted us to rethink bottom-right access. I initiated a broader North Star vision, introducing a persistent top bar for global search and agent access.</p>
+</CaseSection>
+
+<div class="figs">
+  <Figure caption="FIG. 01 · Alpha tested with friendlies">
+    <div class="frame figs__frame">
+      <Image class="figs__alpha" src={figAlpha} width={460} densities={[1, 2]} alt="The alpha Lattice Assistant: a modal over the home page answering “What’s our leave of absence policy?” with steps and sources." />
+    </div>
+  </Figure>
+  <Figure caption="FIG. 02 · Brand and motion explorations">
+    <div class="frame figs__frame figs__frame--brand">
+      <div class="pending figs__logos"><span>logo options</span></div>
+      <div class="figs__idles">
+        {idles.map((name) => <div class="pending figs__idle"><span>idle · {name}</span></div>)}
+      </div>
+    </div>
+  </Figure>
+</div>
+
+<SolutionRotator id="sequencing" number="03" title="sequencing" items={milestones} panelHeight={524}>
+  <div slot="slide-0" class="art seq-top">
+    <div class="seq-north">
+      <img src="/work/ai-agent/seq-north-star.gif" width="2000" height="1908" loading="lazy" decoding="async" alt="The North Star home page: Ask Lattice search in a top bar, a greeting, and AI insight cards for recognition, team health, attrition risk and business impact." />
+    </div>
+  </div>
+  <img slot="slide-1" class="art seq-shot seq-shot--home" src="/work/ai-agent/seq-milestones-1-2.gif" width="2000" height="1388" loading="lazy" decoding="async" alt="The Home page with search and Ask Lattice combined into one bar across the top." />
+  <div slot="slide-2" class="art pending seq-chat"><span>chat history panel</span></div>
+  <div slot="slide-3" class="art pending seq-ask"><span>Ask Lattice greeting</span></div>
+</SolutionRotator>
+
+<CaseSection number="04" title="the outcome">
+  <p>We launched and validated Lattice Assistant as a trusted, embedded platform experience, evolving it from an experimental Help Desk add-on into an always-available HR partner. Within three months, it reached 5.2% overall adoption and 10.6% manager adoption, supported by 98.6% end-to-end accuracy. The experience automated repetitive HR questions, reduced admin overhead, and gave employees a centralized source of truth.</p>
+  <p>Most importantly, unifying global search and the Assistant created a foundation for AI to scale across Lattice. With trust and platform readiness established, the AI teams expanded the Assistant into an Agent that could reason about Lattice data, take actions on users’ behalf, and surface insights in context.</p>
+</CaseSection>
+
+<div class="outcome">
+  <div class="pending outcome__art"><span>outcome · video</span></div>
+</div>
+
+<style>
+  img { height: auto; }
+
+  /* Art that hasn't been exported yet. */
+  .pending {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border: 1px dashed var(--cs-accent-line);
+    background: color-mix(in srgb, var(--cs-accent-bg) 70%, transparent);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--cs-text-soft);
+    text-align: center;
+  }
+
+  /* ---- hero ---- */
+  .hero { overflow: hidden; isolation: isolate; border-radius: var(--cs-radius); box-shadow: var(--shadow); }
+  .hero__art { aspect-ratio: 1080 / 670; border-radius: var(--cs-radius); }
+
+  /* ---- FIG. 01 + 02: both frames keep their 492 x 351 Figma shape, and everything inside
+     is sized in Figma px of that frame (--f) so it scales with it. The figure is the container:
+     its content box is exactly the frame's width. ---- */
+  .figs { display: flex; gap: 32px; }
+  .figs > :global(*) { flex: 1 1 0; container-type: inline-size; }
+  .figs__frame {
+    --f: calc(100cqw / 492);
+    aspect-ratio: 492 / 351;
+    padding: calc(var(--f) * 16);
+  }
+  .figs__alpha { display: block; width: 100%; aspect-ratio: 1135 / 793; object-fit: cover; border-radius: var(--cs-radius-image); }
+
+  .figs__frame--brand { display: flex; flex-direction: column; gap: calc(var(--f) * 16); }
+  .figs__logos { width: 100%; aspect-ratio: 460 / 220; border-radius: var(--cs-radius-image); }
+  .figs__idles { display: grid; grid-template-columns: repeat(5, 1fr); gap: calc(var(--f) * 8); }
+  .figs__idle { aspect-ratio: 1; min-height: 0; overflow: hidden; padding: 2px; font-size: 9px; border-radius: var(--cs-radius-image); }
+
+  /* ---- sequencing art (sizes are Figma px of the 688 x 524 panel; see SolutionRotator) ---- */
+  /* North Star runs off the bottom of the panel: it's pinned 40px from the top and cropped. */
+  .seq-top {
+    display: flex;
+    justify-content: center;
+    align-self: stretch;
+    height: 100%;
+    padding-top: calc(var(--p) * 40);
+  }
+  .seq-north {
+    position: relative;
+    flex: none;
+    width: calc(var(--p) * 608);
+    aspect-ratio: 1240 / 1179.77;
+    overflow: hidden;
+    border-radius: var(--cs-radius-frame);
+  }
+  .seq-north img { position: absolute; left: -0.55%; top: -0.56%; width: 101.11%; height: 101.38%; max-width: none; }
+
+  .seq-shot { border-radius: var(--cs-radius-frame); box-shadow: var(--shadow); }
+  .seq-shot--home { width: calc(var(--p) * 608); aspect-ratio: 1135 / 789; object-fit: cover; }
+
+  .seq-chat { width: calc(var(--p) * 540); aspect-ratio: 540 / 453.98; border-radius: var(--cs-radius-frame); }
+  .seq-ask { width: calc(var(--p) * 488); aspect-ratio: 488 / 444.95; border-radius: var(--cs-radius-frame); }
+
+  /* ---- outcome ---- */
+  .outcome { overflow: hidden; isolation: isolate; border-radius: var(--cs-radius); box-shadow: var(--shadow); }
+  .outcome__art { aspect-ratio: 1080 / 806; border-radius: var(--cs-radius); }
+
+  @media (max-width: 860px) {
+    .figs { flex-direction: column; gap: 24px; }
+  }
+</style>

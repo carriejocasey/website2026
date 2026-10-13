@@ -6,6 +6,7 @@
  * in public/work/platform-redesign.
  */
 import { Image } from 'astro:assets';
+import CaseIntro from '~/components/case-study/CaseIntro.astro';
 import CaseSection from '~/components/case-study/CaseSection.astro';
 import Figure from '~/components/case-study/Figure.astro';
 import SolutionRotator from '~/components/case-study/SolutionRotator.astro';
@@ -67,12 +68,9 @@ const solutions = [
 ];
 ---
 
-<header class="intro">
-  <h1 class="intro__title">Navigation &amp; Platform Redesign</h1>
-  <p class="intro__lede">
-    I led the redesign of Lattice’s navigation and information architecture, resolving long-standing usability issues and unifying a fragmented platform into a modern, AI-forward experience.
-  </p>
-</header>
+<CaseIntro title="Navigation & Platform Redesign">
+  I led the redesign of Lattice’s navigation and information architecture, resolving long-standing usability issues and unifying a fragmented platform into a modern, AI-forward experience.
+</CaseIntro>
 
 <div class="hero">
   <AutoVideo
@@ -189,34 +187,6 @@ const solutions = [
 
 <style>
   img { height: auto; }
-
-  /* ---- intro ---- */
-  .intro {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    text-align: center;
-  }
-  .intro__title {
-    margin: 0;
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: clamp(44px, 6.25vw, 80px);
-    line-height: 1.1;
-    text-wrap: balance;
-  }
-  /* Same size as the section copy (CaseSection.astro), 18px when that stacks. */
-  .intro__lede {
-    margin: 0;
-    max-width: 760px;
-    font-size: 20px;
-    line-height: 1.5;
-    text-wrap: pretty;
-  }
-  @media (max-width: 860px) {
-    .intro__lede { font-size: 18px; }
-  }
 
   /* The recording has dark window corners; a 24px radius always covers them (they're ~12px
      at full width and shrink with the video). Rounded on the wrapper and the video, since

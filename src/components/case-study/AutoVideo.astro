@@ -2,7 +2,8 @@
 /**
  * A silent, looping demo video that stands in for a GIF. Nothing downloads until it's near the
  * screen; it plays while visible and pauses when scrolled away. People who ask for reduced
- * motion get the poster with play controls instead.
+ * motion get the poster with play controls instead. Inside a hidden rotator slide it waits for the
+ * rotator to start it. Leave out `label` for a decorative video.
  */
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
@@ -12,7 +13,7 @@ interface Props {
   poster: ImageMetadata;
   /** Display width in CSS px, used to size the poster. */
   width: number;
-  label: string;
+  label?: string;
   class?: string;
 }
 
@@ -32,6 +33,7 @@ const posterImage = await getImage({ src: poster, width: width * 2, format: 'web
   playsinline
   preload="none"
   aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
 ></video>
 
 <script>
@@ -42,7 +44,11 @@ const posterImage = await getImage({ src: poster, width: width * 2, format: 'web
       if (!video.src) video.src = video.dataset.src ?? '';
     };
 
+    // Decorative videos never get controls: they just show their poster if they can't play.
+    const decorative = video.getAttribute('aria-hidden') === 'true';
+
     if (reducedMotion.matches) {
+      if (decorative) return;
       video.controls = true;
       video.preload = 'metadata';
       load();
@@ -56,8 +62,9 @@ const posterImage = await getImage({ src: poster, width: width * 2, format: 'web
 
     new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
+        if (video.parentElement?.closest('[aria-hidden="true"]')) return;
         load();
-        video.play().catch(() => { video.controls = true; });
+        video.play().catch(() => { video.controls = !decorative; });
       } else {
         video.pause();
       }

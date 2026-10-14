@@ -2,27 +2,39 @@
 /**
  * Case study: AI Agent 0-1 (Lattice).
  * Figma "New Site 2026": page 67:2522, sequencing slides 68:5275.
- * Images live in src/assets/work/ai-agent; the animated sequencing screens are in
+ * Images live in src/assets/work/ai-agent; videos (and their posters' sources) are MP4s in
  * public/work/ai-agent.
- *
- * `.pending` boxes hold the place of art that hasn't been exported yet, at its Figma size.
  */
 import { Image } from 'astro:assets';
 import CaseIntro from '~/components/case-study/CaseIntro.astro';
 import CaseSection from '~/components/case-study/CaseSection.astro';
 import Figure from '~/components/case-study/Figure.astro';
 import SolutionRotator from '~/components/case-study/SolutionRotator.astro';
+import AutoVideo from '~/components/case-study/AutoVideo.astro';
 
+import hero from '~/assets/work/ai-agent/hero.png';
+import idlePoster from '~/assets/work/ai-agent/idle-poster.png';
+import thinkingPoster from '~/assets/work/ai-agent/thinking-poster.png';
 import figAlpha from '~/assets/work/ai-agent/fig-alpha.png';
+import logoOptions from '~/assets/work/ai-agent/logo-options.png';
+import markColor from '~/assets/work/ai-agent/mark-color.png';
+import northStarPoster from '~/assets/work/ai-agent/seq-north-star-poster.png';
+import milestones12Poster from '~/assets/work/ai-agent/seq-milestones-1-2-poster.png';
+import fastFollows from '~/assets/work/ai-agent/seq-fast-follows.png';
+import milestone3 from '~/assets/work/ai-agent/seq-milestone-3.png';
+import outcomePoster from '~/assets/work/ai-agent/outcome-poster.png';
 
 const milestones = [
   {
     title: 'North Star',
     description: 'Embed AI across Lattice with an always-available Assistant, rethink navigation and information architecture, and modernize the visual system.',
+    // The walkthrough runs 43s; it plays through once before moving on.
+    duration: 43000,
   },
   {
     title: 'Milestones 1 & 2',
     description: 'Move Lattice search into a new top bar on Home. Combine search and Ask Lattice into a single, unified top bar experience.',
+    duration: 11700,
   },
   {
     title: 'Milestone 2 fast follows',
@@ -34,15 +46,22 @@ const milestones = [
   },
 ];
 
-const idles = ['Control', 'Simple Rotation', 'Basic Hula', 'Basic Hula Halftime', 'Dramatic Hula'];
+const states = [
+  { name: 'Idle', src: '/work/ai-agent/idle.mp4', poster: idlePoster },
+  { name: 'Thinking', src: '/work/ai-agent/thinking.mp4', poster: thinkingPoster },
+];
 ---
 
 <CaseIntro title="AI Agent 0-1">
   I led the 0→1 design of Lattice’s AI Agent from concept to launch, making company knowledge instantly accessible to reduce HR overhead and laying the foundation for future AI capabilities.
 </CaseIntro>
 
+<!-- The Assistant's mark in the greeting is the idle animation, laid over the still. -->
 <div class="hero">
-  <div class="pending hero__art"><span>hero · Home with Ask Lattice open</span></div>
+  <Image class="hero__still" src={hero} width={1080} densities={[1, 2]} loading="eager" alt="Lattice Home with Ask Lattice open from the top bar: a greeting with suggested prompts, recent chats and shortcuts to 1:1s, Feedback, Updates, Time off, Goals and more." />
+  <div class="hero__mark">
+    <AutoVideo src="/work/ai-agent/idle.mp4" poster={idlePoster} width={18} />
+  </div>
 </div>
 
 <CaseSection number="01" title="the context">
@@ -63,9 +82,17 @@ const idles = ['Control', 'Simple Rotation', 'Basic Hula', 'Basic Hula Halftime'
   </Figure>
   <Figure caption="FIG. 02 · Brand and motion explorations">
     <div class="frame figs__frame figs__frame--brand">
-      <div class="pending figs__logos"><span>logo options</span></div>
-      <div class="figs__idles">
-        {idles.map((name) => <div class="pending figs__idle"><span>idle · {name}</span></div>)}
+      <Image class="figs__logos" src={logoOptions} width={460} densities={[1, 2]} alt="Four line-drawn mark options, each a different knot of loops." />
+      <div class="figs__marks">
+        <Image src={markColor} width={460} densities={[1, 2]} alt="The chosen mark in outline, beside four soft gradient color treatments of it." />
+      </div>
+      <div class="figs__states">
+        {states.map((state) => (
+          <div class="figs__state">
+            <AutoVideo src={state.src} poster={state.poster} width={64} label={`The Assistant’s mark animating in its ${state.name.toLowerCase()} state.`} />
+            <span class="figs__state-name">{state.name}</span>
+          </div>
+        ))}
       </div>
     </div>
   </Figure>
@@ -74,12 +101,14 @@ const idles = ['Control', 'Simple Rotation', 'Basic Hula', 'Basic Hula Halftime'
 <SolutionRotator id="sequencing" number="03" title="sequencing" items={milestones} panelHeight={524}>
   <div slot="slide-0" class="art seq-top">
     <div class="seq-north">
-      <img src="/work/ai-agent/seq-north-star.gif" width="2000" height="1908" loading="lazy" decoding="async" alt="The North Star home page: Ask Lattice search in a top bar, a greeting, and AI insight cards for recognition, team health, attrition risk and business impact." />
+      <AutoVideo src="/work/ai-agent/seq-north-star.mp4" poster={northStarPoster} width={608} label="The North Star home page: Ask Lattice in the top bar opens into search results, suggestions and a threaded conversation, over AI insight cards." />
     </div>
   </div>
-  <img slot="slide-1" class="art seq-shot seq-shot--home" src="/work/ai-agent/seq-milestones-1-2.gif" width="2000" height="1388" loading="lazy" decoding="async" alt="The Home page with search and Ask Lattice combined into one bar across the top." />
-  <div slot="slide-2" class="art pending seq-chat"><span>chat history panel</span></div>
-  <div slot="slide-3" class="art pending seq-ask"><span>Ask Lattice greeting</span></div>
+  <div slot="slide-1" class="art seq-shot seq-shot--home">
+    <AutoVideo src="/work/ai-agent/seq-milestones-1-2.mp4" poster={milestones12Poster} width={608} label="The Home page with search and Ask Lattice combined into one bar across the top." />
+  </div>
+  <Image slot="slide-2" class="art seq-glass seq-glass--chat" src={fastFollows} width={550} densities={[1, 2]} alt="Ask Lattice with a threaded conversation, a “Checking a few things…” progress line, and chat history in a side panel." />
+  <Image slot="slide-3" class="art seq-glass seq-glass--ask" src={milestone3} width={500} densities={[1, 2]} alt="Ask Lattice opening with a contextual greeting for Riley, suggested prompts, recent chats and shortcuts." />
 </SolutionRotator>
 
 <CaseSection number="04" title="the outcome">
@@ -88,29 +117,35 @@ const idles = ['Control', 'Simple Rotation', 'Basic Hula', 'Basic Hula Halftime'
 </CaseSection>
 
 <div class="outcome">
-  <div class="pending outcome__art"><span>outcome · video</span></div>
+  <AutoVideo
+    src="/work/ai-agent/outcome.mp4"
+    poster={outcomePoster}
+    width={1080}
+    label="A walkthrough of Ask Lattice in the shipped product, from the top bar on Home."
+  />
 </div>
 
 <style>
   img { height: auto; }
 
-  /* Art that hasn't been exported yet. */
-  .pending {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    border: 1px dashed var(--cs-accent-line);
-    background: color-mix(in srgb, var(--cs-accent-bg) 70%, transparent);
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--cs-text-soft);
-    text-align: center;
+  /* ---- hero: the 1080 x 670 Figma group (67:10197) ---- */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: var(--cs-radius);
+    box-shadow: var(--shadow);
   }
-
-  /* ---- hero ---- */
-  .hero { overflow: hidden; isolation: isolate; border-radius: var(--cs-radius); box-shadow: var(--shadow); }
-  .hero__art { aspect-ratio: 1080 / 670; border-radius: var(--cs-radius); }
+  .hero__still { display: block; width: 100%; aspect-ratio: 1080 / 670; }
+  /* The idle mark sits on white, so the video (also on white) covers the still's mark exactly. */
+  .hero__mark {
+    position: absolute;
+    left: calc(312 / 1080 * 100%);
+    top: calc(69 / 670 * 100%);
+    width: calc(18 / 1080 * 100%);
+    aspect-ratio: 1;
+  }
+  .hero__mark :global(video) { width: 100%; height: 100%; }
 
   /* ---- FIG. 01 + 02: both frames keep their 492 x 351 Figma shape, and everything inside
      is sized in Figma px of that frame (--f) so it scales with it. The figure is the container:
@@ -125,15 +160,28 @@ const idles = ['Control', 'Simple Rotation', 'Basic Hula', 'Basic Hula Halftime'
   .figs__alpha { display: block; width: 100%; aspect-ratio: 1135 / 793; object-fit: cover; border-radius: var(--cs-radius-image); }
 
   .figs__frame--brand { display: flex; flex-direction: column; gap: calc(var(--f) * 16); }
-  .figs__logos { width: 100%; aspect-ratio: 460 / 220; border-radius: var(--cs-radius-image); }
-  .figs__idles { display: grid; grid-template-columns: repeat(5, 1fr); gap: calc(var(--f) * 8); }
-  .figs__idle { aspect-ratio: 1; min-height: 0; overflow: hidden; padding: 2px; font-size: 9px; border-radius: var(--cs-radius-image); }
+  .figs__logos { display: block; width: 100%; }
+  .figs__marks { padding-block: calc(var(--f) * 20.5); }
+  .figs__marks img { display: block; width: 100%; }
+  /* Two motion states, set like the option labels above them. */
+  .figs__states { display: flex; justify-content: center; gap: calc(var(--f) * 72); }
+  .figs__state { display: flex; flex-direction: column; align-items: center; gap: calc(var(--f) * 4); }
+  .figs__state :global(video) { width: calc(var(--f) * 64); aspect-ratio: 1; }
+  .figs__state-name {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: max(9px, calc(var(--f) * 8.3));
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #000;
+  }
 
   /* ---- sequencing art (sizes are Figma px of the 688 x 524 panel; see SolutionRotator) ---- */
   /* North Star runs off the bottom of the panel: it's pinned 40px from the top and cropped. */
   .seq-top {
     display: flex;
     justify-content: center;
+    align-items: flex-start;
     align-self: stretch;
     height: 100%;
     padding-top: calc(var(--p) * 40);
@@ -146,17 +194,20 @@ const idles = ['Control', 'Simple Rotation', 'Basic Hula', 'Basic Hula Halftime'
     overflow: hidden;
     border-radius: var(--cs-radius-frame);
   }
-  .seq-north img { position: absolute; left: -0.55%; top: -0.56%; width: 101.11%; height: 101.38%; max-width: none; }
+  .seq-north :global(video) { position: absolute; left: -0.55%; top: -0.56%; width: 101.11%; height: 101.38%; max-width: none; object-fit: cover; }
 
-  .seq-shot { border-radius: var(--cs-radius-frame); box-shadow: var(--shadow); }
-  .seq-shot--home { width: calc(var(--p) * 608); aspect-ratio: 1135 / 789; object-fit: cover; }
+  .seq-shot { overflow: hidden; border-radius: var(--cs-radius-frame); box-shadow: var(--shadow); }
+  .seq-shot--home { width: calc(var(--p) * 608); }
+  .seq-shot--home :global(video) { aspect-ratio: 1135 / 789; object-fit: cover; }
 
-  .seq-chat { width: calc(var(--p) * 540); aspect-ratio: 540 / 453.98; border-radius: var(--cs-radius-frame); }
-  .seq-ask { width: calc(var(--p) * 488); aspect-ratio: 488 / 444.95; border-radius: var(--cs-radius-frame); }
+  /* The glass panels are exported with their drop shadows, which add a little more room below
+     than above; the nudge keeps each panel itself centred, as in Figma. */
+  .seq-glass--chat { width: calc(var(--p) * 550); transform: translateY(calc(var(--p) * 2.25)); }
+  .seq-glass--ask { width: calc(var(--p) * 500); transform: translateY(calc(var(--p) * 2.9)); }
 
   /* ---- outcome ---- */
   .outcome { overflow: hidden; isolation: isolate; border-radius: var(--cs-radius); box-shadow: var(--shadow); }
-  .outcome__art { aspect-ratio: 1080 / 806; border-radius: var(--cs-radius); }
+  .outcome :global(video) { aspect-ratio: 2160 / 1502; border-radius: var(--cs-radius); }
 
   @media (max-width: 860px) {
     .figs { flex-direction: column; gap: 24px; }

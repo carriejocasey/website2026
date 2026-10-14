@@ -33,6 +33,22 @@ function initRotator(root: HTMLElement) {
       slide.classList.toggle('is-active', on);
       if (on) slide.removeAttribute('aria-hidden');
       else slide.setAttribute('aria-hidden', 'true');
+      playVideos(slide, on);
+    });
+  }
+
+  // A slide's videos start from the beginning each time it comes up, and stop once it's gone.
+  // (AutoVideo leaves videos in hidden slides alone.)
+  function playVideos(slide: HTMLElement, on: boolean) {
+    slide.querySelectorAll<HTMLVideoElement>('video[data-auto-video]').forEach((video) => {
+      if (!on) {
+        video.pause();
+        return;
+      }
+      if (reducedMotion.matches) return;
+      if (!video.src) video.src = video.dataset.src ?? '';
+      video.currentTime = 0;
+      video.play().catch(() => {});
     });
   }
 

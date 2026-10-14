@@ -6,7 +6,8 @@
  *
  * Pass each slide's art as a named slot: slide-0, slide-1, ... in the same order as `items`.
  * Inside a slot, size things in Figma px with `calc(var(--p) * <px>)`: --p is one px of the
- * 688px-wide Figma panel, so the art scales with the panel.
+ * 688px-wide Figma panel, so the art scales with the panel. `panelHeight` is the panel's Figma
+ * height (568 unless set).
  */
 interface Item {
   title: string;
@@ -20,9 +21,10 @@ interface Props {
   number: string;
   title: string;
   items: Item[];
+  panelHeight?: number;
 }
 
-const { id, number, title, items } = Astro.props;
+const { id, number, title, items, panelHeight = 568 } = Astro.props;
 const slides = await Promise.all(items.map((_, i) => Astro.slots.render(`slide-${i}`)));
 ---
 
@@ -50,7 +52,7 @@ const slides = await Promise.all(items.map((_, i) => Astro.slots.render(`slide-$
     </div>
   </div>
 
-  <div class="solution__panel">
+  <div class="solution__panel" style={`--panel-h: ${panelHeight}`}>
     {slides.map((html, i) => (
       <div
         class:list={['solution__slide', { 'is-active': i === 0 }]}
@@ -160,7 +162,7 @@ const slides = await Promise.all(items.map((_, i) => Astro.slots.render(`slide-$
     min-width: 0;
     container-type: inline-size;
     display: grid;
-    aspect-ratio: 688 / 568;
+    aspect-ratio: 688 / var(--panel-h);
     overflow: hidden;
     border-radius: var(--cs-radius);
     background: var(--cs-panel);

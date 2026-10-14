@@ -1,0 +1,218 @@
+---
+/**
+ * Case study: AI Agent 0-1 (Lattice).
+ * Figma "New Site 2026": page 67:2522, sequencing slides 68:5275.
+ * Images live in src/assets/work/ai-agent; videos (and their posters' sources) are MP4s in
+ * public/work/ai-agent.
+ */
+import { Image } from 'astro:assets';
+import CaseIntro from '~/components/case-study/CaseIntro.astro';
+import CaseSection from '~/components/case-study/CaseSection.astro';
+import Figure from '~/components/case-study/Figure.astro';
+import SolutionRotator from '~/components/case-study/SolutionRotator.astro';
+import AutoVideo from '~/components/case-study/AutoVideo.astro';
+
+import hero from '~/assets/work/ai-agent/hero.png';
+import idlePoster from '~/assets/work/ai-agent/idle-poster.png';
+import thinkingPoster from '~/assets/work/ai-agent/thinking-poster.png';
+import figAlpha from '~/assets/work/ai-agent/fig-alpha.png';
+import logoOptions from '~/assets/work/ai-agent/logo-options.png';
+import markColor from '~/assets/work/ai-agent/mark-color.png';
+import northStarPoster from '~/assets/work/ai-agent/seq-north-star-poster.png';
+import milestones12Poster from '~/assets/work/ai-agent/seq-milestones-1-2-poster.png';
+import fastFollows from '~/assets/work/ai-agent/seq-fast-follows.png';
+import milestone3 from '~/assets/work/ai-agent/seq-milestone-3.png';
+import outcomePoster from '~/assets/work/ai-agent/outcome-poster.png';
+
+const milestones = [
+  {
+    title: 'North Star',
+    description: 'Embed AI across Lattice with an always-available Assistant, rethink navigation and information architecture, and modernize the visual system.',
+    // The walkthrough runs 43s; it plays through once before moving on.
+    duration: 43000,
+  },
+  {
+    title: 'Milestones 1 & 2',
+    description: 'Move Lattice search into a new top bar on Home. Combine search and Ask Lattice into a single, unified top bar experience.',
+    // The video runs 11.7s; this leaves a few seconds after it to finish reading.
+    duration: 15000,
+  },
+  {
+    title: 'Milestone 2 fast follows',
+    description: 'Introduce chat history and threaded conversations. Surface user-friendly tool calls to indicate thinking progress to user.',
+    duration: 10000,
+  },
+  {
+    title: 'Milestone 3',
+    description: 'Expand Search & Ask Lattice to all product pages and ensure responsive behavior across break points. Add contextual greetings and AI suggestions to reduce cold starts.',
+    duration: 10000,
+  },
+];
+
+const states = [
+  { name: 'Idle', src: '/work/ai-agent/idle.mp4', poster: idlePoster },
+  { name: 'Thinking', src: '/work/ai-agent/thinking.mp4', poster: thinkingPoster },
+];
+---
+
+<CaseIntro title="AI Agent 0-1">
+  I led the 0→1 design of Lattice’s AI Agent from concept to launch, making company knowledge instantly accessible to reduce HR overhead and laying the foundation for future AI capabilities.
+</CaseIntro>
+
+<!-- The Assistant's mark in the greeting is the idle animation, laid over the still. -->
+<div class="hero">
+  <Image class="hero__still" src={hero} width={1080} densities={[1, 2]} loading="eager" alt="Lattice Home with Ask Lattice open from the top bar: a greeting with suggested prompts, recent chats and shortcuts to 1:1s, Feedback, Updates, Time off, Goals and more." />
+  <div class="hero__mark">
+    <AutoVideo src="/work/ai-agent/idle.mp4" poster={idlePoster} width={18} />
+  </div>
+</div>
+
+<CaseSection number="01" title="the context">
+  <p>Company knowledge was fragmented across tools, and employees and managers struggled to get timely, trustworthy guidance. HR teams were overwhelmed by repetitive questions, creating an opportunity for Lattice to shift its AI strategy from simple novelty to solving core user problems.</p>
+  <p>I led the 0→1 design of Lattice’s AI Agent, defining the MVP from concept to launch, including brand identity and interaction design. The goal was to make company knowledge instantly accessible, reduce HR overhead, and build trust in AI. With no existing conversational AI in Lattice and an engineering team relatively new to building AI systems, we needed real user data quickly to improve prompts and output quality.</p>
+</CaseSection>
+
+<CaseSection number="02" title="the approach">
+  <p>I partnered with UXR to assess HR buyers’ perceptions of AI, trust, and willingness to pay. This validated the HR Help Desk as a solid starting point to build trust in AI before monetizing. With PM, I narrowed the scope and defined a phased rollout for three core MVP experiences: the Q&amp;A chat experience, company knowledge vault, and agent training center.</p>
+  <p>Testing a barebones alpha with five “friendlies” customers helped us refine UX and prompt quality as I iterated on entry points and agent branding. Usability testing revealed confusion between Lattice Assistant and the Customer Care chatbot, and executive feedback prompted us to rethink bottom-right access. I initiated a broader North Star vision, introducing a persistent top bar for global search and agent access.</p>
+</CaseSection>
+
+<div class="figs">
+  <Figure caption="FIG. 01 · Alpha tested with friendlies">
+    <div class="frame figs__frame">
+      <Image class="figs__alpha" src={figAlpha} width={460} densities={[1, 2]} alt="The alpha Lattice Assistant: a modal over the home page answering “What’s our leave of absence policy?” with steps and sources." />
+    </div>
+  </Figure>
+  <Figure caption="FIG. 02 · Brand and motion explorations">
+    <div class="frame figs__frame figs__frame--brand">
+      <Image class="figs__logos" src={logoOptions} width={460} densities={[1, 2]} alt="Four line-drawn mark options, each a different knot of loops." />
+      <div class="figs__marks">
+        <Image src={markColor} width={460} densities={[1, 2]} alt="The chosen mark in outline, beside four soft gradient color treatments of it." />
+      </div>
+      <div class="figs__states">
+        {states.map((state) => (
+          <div class="figs__state">
+            <AutoVideo src={state.src} poster={state.poster} width={64} label={`The Assistant’s mark animating in its ${state.name.toLowerCase()} state.`} />
+            <span class="figs__state-name">{state.name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </Figure>
+</div>
+
+<SolutionRotator id="sequencing" number="03" title="sequencing" items={milestones} panelHeight={524}>
+  <div slot="slide-0" class="art seq-top">
+    <div class="seq-north">
+      <AutoVideo src="/work/ai-agent/seq-north-star.mp4" poster={northStarPoster} width={608} label="The North Star home page: Ask Lattice in the top bar opens into search results, suggestions and a threaded conversation, over AI insight cards." />
+    </div>
+  </div>
+  <div slot="slide-1" class="art seq-shot seq-shot--home">
+    <AutoVideo src="/work/ai-agent/seq-milestones-1-2.mp4" poster={milestones12Poster} width={608} label="The Home page with search and Ask Lattice combined into one bar across the top." />
+  </div>
+  <Image slot="slide-2" class="art seq-glass seq-glass--chat" src={fastFollows} width={550} densities={[1, 2]} alt="Ask Lattice with a threaded conversation, a “Checking a few things…” progress line, and chat history in a side panel." />
+  <Image slot="slide-3" class="art seq-glass seq-glass--ask" src={milestone3} width={500} densities={[1, 2]} alt="Ask Lattice opening with a contextual greeting for Riley, suggested prompts, recent chats and shortcuts." />
+</SolutionRotator>
+
+<CaseSection number="04" title="the outcome">
+  <p>We launched and validated Lattice Assistant as a trusted, embedded platform experience, evolving it from an experimental Help Desk add-on into an always-available HR partner. Within three months, it reached 5.2% overall adoption and 10.6% manager adoption, supported by 98.6% end-to-end accuracy. The experience automated repetitive HR questions, reduced admin overhead, and gave employees a centralized source of truth.</p>
+  <p>Most importantly, unifying global search and the Assistant created a foundation for AI to scale across Lattice. With trust and platform readiness established, the AI teams expanded the Assistant into an Agent that could reason about Lattice data, take actions on users’ behalf, and surface insights in context.</p>
+</CaseSection>
+
+<div class="outcome">
+  <AutoVideo
+    src="/work/ai-agent/outcome.mp4"
+    poster={outcomePoster}
+    width={1080}
+    label="A walkthrough of Ask Lattice in the shipped product, from the top bar on Home."
+  />
+</div>
+
+<style>
+  img { height: auto; }
+
+  /* ---- hero: the 1080 x 670 Figma group (67:10197) ---- */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: var(--cs-radius);
+    box-shadow: var(--shadow);
+  }
+  .hero__still { display: block; width: 100%; aspect-ratio: 1080 / 670; }
+  /* The idle mark sits on white, so the video (also on white) covers the still's mark exactly. */
+  .hero__mark {
+    position: absolute;
+    left: calc(312 / 1080 * 100%);
+    top: calc(69 / 670 * 100%);
+    width: calc(18 / 1080 * 100%);
+    aspect-ratio: 1;
+  }
+  .hero__mark :global(video) { width: 100%; height: 100%; }
+
+  /* ---- FIG. 01 + 02: both frames keep their 492 x 351 Figma shape, and everything inside
+     is sized in Figma px of that frame (--f) so it scales with it. The figure is the container:
+     its content box is exactly the frame's width. ---- */
+  .figs { display: flex; gap: 32px; }
+  .figs > :global(*) { flex: 1 1 0; container-type: inline-size; }
+  .figs__frame {
+    --f: calc(100cqw / 492);
+    aspect-ratio: 492 / 351;
+    padding: calc(var(--f) * 16);
+  }
+  .figs__alpha { display: block; width: 100%; aspect-ratio: 1135 / 793; object-fit: cover; border-radius: var(--cs-radius-image); }
+
+  .figs__frame--brand { display: flex; flex-direction: column; gap: calc(var(--f) * 16); }
+  .figs__logos { display: block; width: 100%; }
+  .figs__marks { padding-block: calc(var(--f) * 20.5); }
+  .figs__marks img { display: block; width: 100%; }
+  /* Two motion states, set like the option labels above them. */
+  .figs__states { display: flex; justify-content: center; gap: calc(var(--f) * 72); }
+  .figs__state { display: flex; flex-direction: column; align-items: center; gap: calc(var(--f) * 4); }
+  .figs__state :global(video) { width: calc(var(--f) * 64); aspect-ratio: 1; }
+  .figs__state-name {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: max(9px, calc(var(--f) * 8.3));
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #000;
+  }
+
+  /* ---- sequencing art (sizes are Figma px of the 688 x 524 panel; see SolutionRotator) ---- */
+  /* North Star runs off the bottom of the panel: it's pinned 40px from the top and cropped. */
+  .seq-top {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    align-self: stretch;
+    height: 100%;
+    padding-top: calc(var(--p) * 40);
+  }
+  .seq-north {
+    position: relative;
+    flex: none;
+    width: calc(var(--p) * 608);
+    aspect-ratio: 1240 / 1179.77;
+    overflow: hidden;
+    border-radius: var(--cs-radius-frame);
+  }
+  .seq-north :global(video) { position: absolute; left: -0.55%; top: -0.56%; width: 101.11%; height: 101.38%; max-width: none; object-fit: cover; }
+
+  .seq-shot { overflow: hidden; border-radius: var(--cs-radius-frame); box-shadow: var(--shadow); }
+  .seq-shot--home { width: calc(var(--p) * 608); }
+  .seq-shot--home :global(video) { aspect-ratio: 1135 / 789; object-fit: cover; }
+
+  /* The glass panels are exported with their drop shadows, which add a little more room below
+     than above; the nudge keeps each panel itself centred, as in Figma. */
+  .seq-glass--chat { width: calc(var(--p) * 550); transform: translateY(calc(var(--p) * 2.25)); }
+  .seq-glass--ask { width: calc(var(--p) * 500); transform: translateY(calc(var(--p) * 2.9)); }
+
+  /* ---- outcome ---- */
+  .outcome { overflow: hidden; isolation: isolate; border-radius: var(--cs-radius); box-shadow: var(--shadow); }
+  .outcome :global(video) { aspect-ratio: 2160 / 1502; border-radius: var(--cs-radius); }
+
+  @media (max-width: 860px) {
+    .figs { flex-direction: column; gap: 24px; }
+  }
+</style>

@@ -7,7 +7,7 @@ import { z } from 'astro/zod';
  * The file name becomes the URL: src/content/work/lifecycle-studio.md -> /work/lifecycle-studio
  *
  * Frontmatter shared by both:
- *   title    Shown in caps on the home list ("PLATFORM REDESIGN").
+ *   title    The project name on the home list and in the tab ("Lifecycle Studio").
  *   tag      The italic serif bit after the slash ("Lattice", "Find your light").
  *   summary  One line used in the page's meta description.
  *   order    Sort order, lowest first.

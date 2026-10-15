@@ -15,8 +15,6 @@
  *   - Headings and header labels are buttons with aria-expanded; projects are the links.
  *   - Review helper: /#work, /#play, /#about or /#role pins that state (Esc releases).
  */
-import { mountSky } from './sky';
-
 export type HomeState = 'default' | 'work' | 'play' | 'about' | 'role';
 const OPEN_STATES: HomeState[] = ['work', 'play', 'about', 'role'];
 
@@ -52,18 +50,18 @@ export function initHome() {
   // ---------------------------------------------------------------- state
 
   /**
-   * What the sky's clip is doing right now. Opening work jumps the sky to full bleed and
+   * What the sky's window is doing right now. Opening work jumps the sky to full bleed and
    * closing it holds the sky there for a beat (see "Sky behind the paper" in HomeStage.astro).
    * Both tricks assume the sky is at rest; if it's still moving, freezing or jumping it mid-flight
    * is what made hovers look abrupt, so CSS lets it keep animating instead.
-   *   moving   a real clip transition is underway
+   *   moving   a real edge transition is underway
    *   holding  the zero-length "wait, then jump" after work closed hasn't fired yet
    *   still    at rest
    */
   function skyMotion(): 'moving' | 'holding' | 'still' {
     let motion: 'moving' | 'holding' | 'still' = 'still';
     for (const a of sky?.getAnimations() ?? []) {
-      if (!(a instanceof CSSTransition) || !a.transitionProperty.startsWith('--clip-') || a.playState !== 'running') continue;
+      if (!(a instanceof CSSTransition) || !a.transitionProperty.startsWith('--edge-') || a.playState !== 'running') continue;
       if (Number(a.effect?.getTiming().duration) > 0) return 'moving';
       motion = 'holding';
     }
@@ -244,9 +242,4 @@ export function initHome() {
       window.setTimeout(finishIntro, INTRO_MS);
     }
   });
-
-  // ---------------------------------------------------------------- sky
-
-  const canvas = stage.querySelector<HTMLCanvasElement>('canvas[data-sky]');
-  if (canvas && photo && !reducedMotion.matches) mountSky(canvas, photo);
 }

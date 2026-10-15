@@ -30,7 +30,6 @@ src/
     SkyPhoto.astro       the sky photo layer
   scripts/home/
     controller.ts        which state is open (hover, keyboard, touch rules)
-    sky.ts               WebGL cloud drift
   layouts/               BaseLayout (head/meta), PageLayout (inner pages)
   pages/                 index (home), [section]/[slug] (project pages), 404
 ```
@@ -55,8 +54,7 @@ Write-up goes here.
 **Change the words:** edit `src/data/site.ts`. Wrap a word in `*asterisks*` to set it in the
 italic serif.
 
-**Tune the motion:** edit `--ease-*` and `--dur-*` in `src/styles/tokens.css`. Cloud drift
-speed and strength are in the `SKY` object at the top of `src/scripts/home/sky.ts`.
+**Tune the motion:** edit `--ease-*` and `--dur-*` in `src/styles/tokens.css`.
 
 **Move or resize something on the home stage:** edit the custom properties at the top of
 the `<style>` block in `HomeStage.astro`. All lengths are Figma px × `--u`, so values can be
@@ -83,13 +81,12 @@ Design source: Figma file **New Site 2026** (frames 4:6, 4:44, 4:34, 7:314, 7:36
   open while the pointer is inside the card it opened into (its zone), so text that moves never
   slips out from under the cursor. Leaving the zone closes it after 160ms of grace, and landing
   on another heading switches straight to that state.
-- **Motion.** Opening uses a long, soft landing and closing is quicker. Only transforms,
-  clip-paths and colors animate. Header label colors flip at the moment the sky's edge passes
+- **Motion.** Opening uses a long, soft landing and closing is quicker. The paper and sky cards are
+  rounded boxes whose edges move (see "Card windows" in `HomeStage.astro`); the glass header
+  cards grow with a clip-path. Header label colors flip at the moment the sky's edge passes
   them; the delays are computed against the easing curves (see the comments in `HomeStage.astro`).
 - **Intro.** It plays on the first visit of a browser session: the photo rises in and the text
   slides up line by line. It's skipped on later visits and under reduced motion.
-- **Clouds.** A small WebGL shader warps and drifts the photo on the GPU, and keeps the tree
-  still. The plain `<img>` sits underneath as a fallback. It's off under `prefers-reduced-motion`.
 - **Accessibility.** Focusing a heading or a project link opens its section. Headings and header
   labels are buttons with `aria-expanded`. Esc closes. Without JS, the project lists simply show.
 - **Header cards.** "carrie noonan*" and "*designer, maker" behave identically: the label goes

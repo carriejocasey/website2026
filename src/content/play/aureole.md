@@ -1,6 +1,6 @@
 ---
-title: Aureole
-tag: Find your light
+title: Find your light
+tag: Aureole
 order: 1
 url: https://aureolelight.netlify.app/
 ---

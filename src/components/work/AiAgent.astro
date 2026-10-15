@@ -15,7 +15,7 @@ import AutoVideo from '~/components/case-study/AutoVideo.astro';
 import hero from '~/assets/work/ai-agent/hero.png';
 import idlePoster from '~/assets/work/ai-agent/idle-poster.png';
 import thinkingPoster from '~/assets/work/ai-agent/thinking-poster.png';
-import figAlpha from '~/assets/work/ai-agent/fig-alpha.png';
+import friendliesPoster from '~/assets/work/ai-agent/fig-friendlies-poster.png';
 import logoOptions from '~/assets/work/ai-agent/logo-options.png';
 import markColor from '~/assets/work/ai-agent/mark-color.png';
 import northStarPoster from '~/assets/work/ai-agent/seq-north-star-poster.png';
@@ -80,7 +80,7 @@ const states = [
 <div class="figs">
   <Figure caption="FIG. 01 · Alpha tested with friendlies">
     <div class="frame figs__frame">
-      <Image class="figs__alpha" src={figAlpha} width={460} densities={[1, 2]} alt="The alpha Lattice Assistant: a modal over the home page answering “What’s our leave of absence policy?” with steps and sources." />
+      <AutoVideo class="figs__alpha" src="/work/ai-agent/fig-friendlies.mp4" poster={friendliesPoster} width={460} label="The alpha Lattice Assistant: a modal over the home page answering career growth and feedback questions, streaming its replies with steps and sources." />
     </div>
   </Figure>
   <Figure caption="FIG. 02 · Brand and motion explorations">
@@ -136,7 +136,7 @@ const states = [
     position: relative;
     overflow: hidden;
     isolation: isolate;
-    border-radius: var(--cs-radius);
+    border-radius: var(--cs-radius-media);
     box-shadow: var(--shadow);
   }
   .hero__still { display: block; width: 100%; aspect-ratio: 1080 / 670; }
@@ -160,7 +160,7 @@ const states = [
     aspect-ratio: 492 / 351;
     padding: calc(var(--f) * 16);
   }
-  .figs__alpha { display: block; width: 100%; aspect-ratio: 1135 / 793; object-fit: cover; border-radius: var(--cs-radius-image); }
+  .figs__frame :global(.figs__alpha) { display: block; width: 100%; aspect-ratio: 1135 / 793; object-fit: cover; border-radius: var(--cs-radius-image); }
 
   .figs__frame--brand { display: flex; flex-direction: column; gap: calc(var(--f) * 16); }
   .figs__logos { display: block; width: 100%; }
@@ -209,8 +209,8 @@ const states = [
   .seq-glass--ask { width: calc(var(--p) * 500); transform: translateY(calc(var(--p) * 2.9)); }
 
   /* ---- outcome ---- */
-  .outcome { overflow: hidden; isolation: isolate; border-radius: var(--cs-radius); box-shadow: var(--shadow); }
-  .outcome :global(video) { aspect-ratio: 2160 / 1502; border-radius: var(--cs-radius); }
+  .outcome { overflow: hidden; isolation: isolate; border-radius: var(--cs-radius-media); box-shadow: var(--shadow); }
+  .outcome :global(video) { aspect-ratio: 2160 / 1502; border-radius: var(--cs-radius-media); }
 
   @media (max-width: 860px) {
     .figs { flex-direction: column; gap: 24px; }

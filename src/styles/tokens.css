@@ -51,6 +51,9 @@
   --cs-radius: 24px;         /* the page card, purple figure cards, hero and outcome, solution panel */
   --cs-radius-frame: 16px;   /* white frames inside a figure */
   --cs-radius-image: 10px;   /* images inside those frames */
+  /* Full-width hero and outcome media: the card radius at full size, easing down to the image
+     radius on phones so the corners stay in proportion to the picture. */
+  --cs-radius-media: clamp(var(--cs-radius-image), 2.2vw, var(--cs-radius));
 
   /* ---- motion ----
      Opening is unhurried with a long, soft landing. Closing is quicker so the page

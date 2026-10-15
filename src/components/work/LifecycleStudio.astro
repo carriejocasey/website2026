@@ -1,0 +1,92 @@
+---
+/**
+ * Case study: Lifecycle Studio (Hightouch).
+ * Laid out like the other case studies, with placeholder copy and art until the content is in.
+ * Swap each `.placeholder` for an Image or AutoVideo; images go in src/assets/work/lifecycle-studio
+ * and videos (MP4s) in public/work/lifecycle-studio.
+ */
+import CaseIntro from '~/components/case-study/CaseIntro.astro';
+import CaseSection from '~/components/case-study/CaseSection.astro';
+import Figure from '~/components/case-study/Figure.astro';
+import SolutionRotator from '~/components/case-study/SolutionRotator.astro';
+
+const solutions = [
+  { title: 'Solution area one', description: 'A sentence or two on the first part of the solution.' },
+  { title: 'Solution area two', description: 'A sentence or two on the second part of the solution.' },
+  { title: 'Solution area three', description: 'A sentence or two on the third part of the solution.' },
+  { title: 'Solution area four', description: 'A sentence or two on the fourth part of the solution.' },
+];
+---
+
+<CaseIntro title="Lifecycle Studio">
+  A one-paragraph summary of the project and my role in it goes here.
+</CaseIntro>
+
+<div class="hero placeholder">Hero image</div>
+
+<CaseSection number="01" title="the context">
+  <p>The problem, who it affected, and why it mattered goes here.</p>
+  <p>A second paragraph on the starting point and constraints goes here.</p>
+</CaseSection>
+
+<CaseSection number="02" title="the approach">
+  <p>How the work was researched, scoped and run goes here.</p>
+</CaseSection>
+
+<div class="figs">
+  <Figure caption="FIG. 01 · Caption">
+    <div class="frame figs__frame placeholder">Figure 01</div>
+  </Figure>
+  <Figure caption="FIG. 02 · Caption">
+    <div class="frame figs__frame placeholder">Figure 02</div>
+  </Figure>
+</div>
+
+<SolutionRotator id="solution" number="03" title="the solution" items={solutions}>
+  {solutions.map((_, i) => (
+    <div slot={`slide-${i}`} class="art slide placeholder">Solution art {String(i + 1).padStart(2, '0')}</div>
+  ))}
+</SolutionRotator>
+
+<CaseSection number="04" title="the outcome">
+  <p>What shipped and the results go here.</p>
+  <p>A second paragraph on what it set up next goes here.</p>
+</CaseSection>
+
+<div class="outcome placeholder">Outcome image</div>
+
+<style>
+  /* Stand-ins for art that isn't in yet: sized like the real thing, with a mono label. */
+  .placeholder {
+    display: grid;
+    place-items: center;
+    background: #fff;
+    border: 1px dashed var(--cs-accent-line);
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--cs-text-soft);
+  }
+
+  .hero,
+  .outcome {
+    aspect-ratio: 1080 / 670;
+    border-radius: var(--cs-radius-media);
+    box-shadow: var(--shadow);
+  }
+
+  /* ---- FIG. 01 + 02 ---- */
+  .figs { display: flex; gap: 32px; }
+  .figs > :global(*) { flex: 1 1 0; }
+  .figs__frame { height: 351px; }
+
+  /* ---- solution art (sizes are Figma px of the 688px panel; see SolutionRotator) ---- */
+  .slide {
+    width: calc(var(--p) * 560);
+    aspect-ratio: 560 / 400;
+    border-radius: var(--cs-radius-frame);
+  }
+
+  @media (max-width: 860px) {
+    .figs { flex-direction: column; gap: 24px; }
+  }
+</style>

@@ -188,19 +188,19 @@ const solutions = [
 <style>
   img { height: auto; }
 
-  /* The recording has dark window corners; a 24px radius always covers them (they're ~12px
-     at full width and shrink with the video). Rounded on the wrapper and the video, since
-     Safari can drop a video's own radius while it plays. */
+  /* The recording has dark window corners; the media radius always covers them (they're ~12px
+     at full width and shrink with the video, at half the rate the radius does). Rounded on the
+     wrapper and the video, since Safari can drop a video's own radius while it plays. */
   .hero {
     overflow: hidden;
     isolation: isolate;
-    border-radius: var(--cs-radius);
+    border-radius: var(--cs-radius-media);
   }
   .hero :global(video) {
     width: 100%;
     height: auto;
     aspect-ratio: 2300 / 1408;
-    border-radius: var(--cs-radius);
+    border-radius: var(--cs-radius-media);
   }
 
   /* ---- FIG. 01 + 02 ---- */
@@ -297,13 +297,13 @@ const solutions = [
   }
 
   /* ---- outcome ---- */
-  .outcome { overflow: hidden; border-radius: var(--cs-radius); }
+  .outcome { overflow: hidden; border-radius: var(--cs-radius-media); }
   .outcome :global(video) {
     width: 100%;
     height: auto;
     aspect-ratio: 1135 / 847;
     object-fit: cover;
-    border-radius: var(--cs-radius);
+    border-radius: var(--cs-radius-media);
     box-shadow: var(--shadow);
   }
 

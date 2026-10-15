@@ -9,12 +9,14 @@ import PageLayout from '~/layouts/PageLayout.astro';
 import CaseStudyLayout from '~/layouts/CaseStudyLayout.astro';
 import PlatformRedesign from '~/components/work/PlatformRedesign.astro';
 import AiAgent from '~/components/work/AiAgent.astro';
+import LifecycleStudio from '~/components/work/LifecycleStudio.astro';
 import { site, type SectionKey } from '~/data/site';
 
 /** Designed case studies, keyed by `section/slug`. */
 const caseStudies: Partial<Record<string, typeof PlatformRedesign>> = {
   'work/platform-redesign': PlatformRedesign,
   'work/ai-agent': AiAgent,
+  'work/lifecycle-studio': LifecycleStudio,
 };
 
 export async function getStaticPaths() {

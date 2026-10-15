@@ -66,6 +66,15 @@ const bodyId = `${key}-body`;
 
   /* ---- glass panel ---- */
 
+  /* The clip is written out edge by edge so each edge can animate as a typed property.
+     Animating clip-path itself sends Chrome down a separate drawing path that sits square and
+     still for a moment the first time it runs. */
+  @property --clip-t { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
+  @property --clip-r { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
+  @property --clip-b { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
+  @property --clip-l { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
+  @property --clip-round { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
+
   .hcard__panel {
     position: absolute;
     inset: 0;
@@ -81,7 +90,7 @@ const bodyId = `${key}-body`;
     --clip-b: var(--ci-b, 50%);
     --clip-l: var(--ci-l, 50%);
     --clip-round: calc(var(--u) * 12);
-    clip-path: inset(var(--clip-t) var(--clip-r) var(--clip-b) var(--clip-l) round var(--clip-round));   /* edge by edge: see "Card shapes" in HomeStage.astro */
+    clip-path: inset(var(--clip-t) var(--clip-r) var(--clip-b) var(--clip-l) round var(--clip-round));
     opacity: 0;
     visibility: hidden;
     pointer-events: none;

@@ -36,7 +36,7 @@ const play = (await getCollection('play', visible)).sort(byOrder);
 
   <div class="paper grid" aria-hidden="true"></div>
   <SkyPhoto />
-  <div class="sheet grid" aria-hidden="true"></div>
+  <div class="sheet window" aria-hidden="true"><div class="window__frame grid"></div></div>
 
   <!-- Invisible boxes marking where each open card ends up. The controller keeps a state
        open while the pointer is inside its zone, so text that moves never slips out from
@@ -77,6 +77,8 @@ const play = (await getCollection('play', visible)).sort(byOrder);
     --card-edge: calc(var(--u) * 32);
     --card-split: calc(var(--u) * 128);                      /* how far a card reaches past the middle */
     --card-r: calc(var(--u) * 32);
+    --work-t: var(--card-top); --work-r: calc(50% - var(--card-split)); --work-b: var(--card-edge); --work-l: var(--card-edge);
+    --play-t: var(--card-top); --play-r: var(--card-edge); --play-b: var(--card-edge); --play-l: calc(50% - var(--card-split));
 
     /* section headings at rest: work from the left edge, play from the right edge */
     --work-x: calc(var(--u) * 48);
@@ -92,9 +94,7 @@ const play = (await getCollection('play', visible)).sort(byOrder);
     --role-color: var(--on-photo);
     --opposite-label: 1;           /* opacity of the other header label while a card is open */
 
-    /* shapes, per state */
-    /* Each card shape is an inset() written out edge by edge (top, right, bottom, left, corner
-       radius), so the edges can animate one by one. See "Card shapes" below for why. */
+    /* shapes, per state: each window's top, right, bottom and left edges and its corner radius */
     --photo-t: 0px; --photo-r: 0px; --photo-b: 0px; --photo-l: 50%; --photo-rad: 0px;
     --sheet-t: 0px; --sheet-r: 50%; --sheet-b: 0px; --sheet-l: 0px; --sheet-rad: 0px;
     --sheet-grid: var(--grid);
@@ -104,7 +104,7 @@ const play = (await getCollection('play', visible)).sort(byOrder);
     --dur: var(--dur-close);
     --ease: var(--ease-close);
 
-    /* The sky's clip normally animates with everything else. See "Sky behind the paper" below. */
+    /* The sky's window normally animates with everything else. See "Sky behind the paper" below. */
     --photo-dur: var(--dur);
     --photo-delay: 0s;
 
@@ -120,7 +120,7 @@ const play = (await getCollection('play', visible)).sort(byOrder);
     --ease: var(--ease-open);
     --flip: var(--flip-open);
     --photo-t: 0px; --photo-r: 0px; --photo-b: 0px; --photo-l: 0px; --photo-rad: 0px;
-    --sheet-t: var(--card-top); --sheet-r: calc(50% - var(--card-split)); --sheet-b: var(--card-edge); --sheet-l: var(--card-edge); --sheet-rad: var(--card-r);
+    --sheet-t: var(--work-t); --sheet-r: var(--work-r); --sheet-b: var(--work-b); --sheet-l: var(--work-l); --sheet-rad: var(--card-r);
     --sheet-grid: calc(var(--grid) * var(--sheet-zoom));
     --sheet-pos: var(--sheet-grid-shift);
     --about-color: var(--on-photo);
@@ -132,7 +132,7 @@ const play = (await getCollection('play', visible)).sort(byOrder);
     --dur: var(--dur-open);
     --ease: var(--ease-open);
     --flip: var(--flip-open);
-    --photo-t: var(--card-top); --photo-r: var(--card-edge); --photo-b: var(--card-edge); --photo-l: calc(50% - var(--card-split)); --photo-rad: var(--card-r);
+    --photo-t: var(--play-t); --photo-r: var(--play-r); --photo-b: var(--play-b); --photo-l: var(--play-l); --photo-rad: var(--card-r);
     --photo-nudge: calc(var(--u) * -36) calc(var(--u) * 20);
     /* The sheet tucks away under the paper edge so it never overlaps the sky card. */
     --sheet-t: 0px; --sheet-r: calc(50% + var(--card-split)); --sheet-b: 0px; --sheet-l: 0px; --sheet-rad: 0px;
@@ -142,7 +142,7 @@ const play = (await getCollection('play', visible)).sort(byOrder);
 
   /* Sky behind the paper. While work is open the sky has to fill the whole stage, but it
      should never be seen *growing* there: it's meant to have been behind the paper all along.
-     So the sky's clip jumps to full bleed while the paper still covers the left half, and on
+     So the sky's window jumps to full bleed while the paper still covers the left half, and on
      the way back it waits until the paper has fully closed before jumping back. Going between
      work and play, the sky really does change shape, so that animates as usual.
      Both tricks only apply while the sky is at rest. If it's still moving (data-sky="moving",
@@ -172,6 +172,8 @@ const play = (await getCollection('play', visible)).sort(byOrder);
       --card-edge: calc(var(--u) * 16);
       --card-split: calc(var(--u) * 96);
       --card-r: calc(var(--u) * 24);
+      --work-t: var(--card-top); --work-r: var(--card-edge); --work-b: calc(50% - var(--card-split)); --work-l: var(--card-edge);
+      --play-t: calc(50% - var(--card-split)); --play-r: var(--card-edge); --play-b: var(--card-edge); --play-l: var(--card-edge);
 
       --work-x: calc(var(--u) * 24);
       --work-y: calc(50% + var(--u) * 24);
@@ -191,38 +193,51 @@ const play = (await getCollection('play', visible)).sort(byOrder);
       --flip-open: 0.13s;
       --flip-close: 0.17s;
     }
-    .stage[data-state="work"] {
-      --sheet-t: var(--card-top); --sheet-r: var(--card-edge); --sheet-b: calc(50% - var(--card-split)); --sheet-l: var(--card-edge); --sheet-rad: var(--card-r);
-    }
     .stage[data-state="work"] .section--work { --sx: calc(var(--u) * 16); --sy: calc(var(--u) * 96); }
 
     .stage[data-state="play"] {
       --photo-nudge: 0 0;
-      --photo-t: calc(50% - var(--card-split)); --photo-r: var(--card-edge); --photo-b: var(--card-edge); --photo-l: var(--card-edge); --photo-rad: var(--card-r);
       --sheet-t: 0px; --sheet-r: 0px; --sheet-b: calc(50% + var(--card-split)); --sheet-l: 0px; --sheet-rad: 0px;
-      --role-color: var(--ink);
     }
     .stage[data-state="play"] .section--play { --sx: calc(var(--u) * -16); --sy: calc(var(--u) * -16); }
     .stage[data-state="play"] .section--work { --sy: calc(var(--u) * -96); }
-
-    .zone--work { inset: var(--card-top) var(--card-edge) calc(50% - var(--card-split)) var(--card-edge); }
-    .zone--play { inset: calc(50% - var(--card-split)) var(--card-edge) var(--card-edge) var(--card-edge); }
   }
 
   /* ------------------------------------------------------------------
-     Card shapes. The paper, the sky and the glass cards are all clipped
-     with inset(). Rather than animating clip-path itself, each edge and the
-     corner radius is its own typed property and those animate. Chrome hands
-     clip-path animations to a separate drawing path that has to set itself
-     up on first use, and again after the page has been hidden; while it does,
-     the card sits square and still, then jumps. Animating the edges keeps
-     every frame on the normal path.
+     Card windows. The paper card and the sky are each a plain box with
+     rounded corners (.window) whose edges move, and inside it a stage-sized
+     frame (.window__frame) shifted back by the same amount, so the grid or
+     photo holds still while the window opens and closes around it.
+     Earlier versions cut the shapes with an animated clip-path. Chrome
+     sometimes drew that clip square, or left a stale strip of the old
+     shape behind, once something nearby put the card on its own layer
+     (the WebGL sky did, permanently). Rounded boxes are the drawing path
+     every browser gets right.
+     The edges are typed properties so they can animate one by one. The
+     frame inherits them and shifts back with translate, whose percentages
+     (like the edges') measure the stage, since the frame is stage-sized.
      ------------------------------------------------------------------ */
-  @property --clip-t { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
-  @property --clip-r { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
-  @property --clip-b { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
-  @property --clip-l { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
-  @property --clip-round { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
+  @property --edge-t { syntax: "<length-percentage>"; inherits: true; initial-value: 0px; }
+  @property --edge-r { syntax: "<length-percentage>"; inherits: true; initial-value: 0px; }
+  @property --edge-b { syntax: "<length-percentage>"; inherits: true; initial-value: 0px; }
+  @property --edge-l { syntax: "<length-percentage>"; inherits: true; initial-value: 0px; }
+  @property --edge-round { syntax: "<length-percentage>"; inherits: true; initial-value: 0px; }
+
+  .window {
+    position: absolute;
+    inset: var(--edge-t) var(--edge-r) var(--edge-b) var(--edge-l);
+    border-radius: var(--edge-round);
+    overflow: hidden;
+    transition-property: --edge-t, --edge-r, --edge-b, --edge-l, --edge-round;
+  }
+  .window__frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100cqw;
+    height: 100cqh;
+    translate: calc(-1 * var(--edge-l)) calc(-1 * var(--edge-t));
+  }
 
   /* ------------------------------------------------------------------
      Layers
@@ -233,14 +248,14 @@ const play = (await getCollection('play', visible)).sort(byOrder);
     position: fixed;
     inset: 0;
     overflow: hidden;
+    container-type: size;   /* so a card window's frame can be stage-sized (100cqw x 100cqh) */
     user-select: none;
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
   }
 
+  .paper { position: absolute; inset: 0; }
   .grid {
-    position: absolute;
-    inset: 0;
     background-color: var(--paper);
     /* one dot at the top-left of each cell, i.e. where the old grid lines crossed */
     background-image: radial-gradient(circle at var(--grid-dot-r) var(--grid-dot-r), var(--grid-dot) calc(var(--grid-dot-r) - 0.5px), transparent var(--grid-dot-r));
@@ -248,25 +263,27 @@ const play = (await getCollection('play', visible)).sort(byOrder);
   }
 
   /* The work card. At rest it's an exact copy of the left half, so it can't be seen;
-     opening clips it down to the card while its grid zooms from 40 to 48. */
+     opening shrinks it down to the card while its grid zooms from 40 to 48. */
   .sheet {
     z-index: 2;
-    --clip-t: var(--sheet-t);
-    --clip-r: var(--sheet-r);
-    --clip-b: var(--sheet-b);
-    --clip-l: var(--sheet-l);
-    --clip-round: var(--sheet-rad);
-    clip-path: inset(var(--clip-t) var(--clip-r) var(--clip-b) var(--clip-l) round var(--clip-round));
-    background-size: var(--sheet-grid) var(--sheet-grid);
-    background-position: var(--sheet-pos);
-    transition-property: --clip-t, --clip-r, --clip-b, --clip-l, --clip-round, background-size, background-position;
+    --edge-t: var(--sheet-t);
+    --edge-r: var(--sheet-r);
+    --edge-b: var(--sheet-b);
+    --edge-l: var(--sheet-l);
+    --edge-round: var(--sheet-rad);
     transition-duration: var(--dur);
     transition-timing-function: var(--ease);
   }
+  .sheet > .grid {
+    background-size: var(--sheet-grid) var(--sheet-grid);
+    background-position: var(--sheet-pos);
+    transition: background-size var(--dur) var(--ease), background-position var(--dur) var(--ease);
+  }
 
+  /* Hover zones are the open cards' footprints, from the same numbers as the shapes. */
   .zone { position: absolute; pointer-events: none; visibility: hidden; }
-  .zone--work { inset: var(--card-top) calc(50% - var(--card-split)) var(--card-edge) var(--card-edge); }
-  .zone--play { inset: var(--card-top) var(--card-edge) var(--card-edge) calc(50% - var(--card-split)); }
+  .zone--work { inset: var(--work-t) var(--work-r) var(--work-b) var(--work-l); }
+  .zone--play { inset: var(--play-t) var(--play-r) var(--play-b) var(--play-l); }
 
   .section--work { --section-x: var(--work-x); --section-bottom: var(--work-y); }
   .section--play { --section-x: var(--play-x); --section-bottom: var(--play-y); }
@@ -281,14 +298,14 @@ const play = (await getCollection('play', visible)).sort(byOrder);
      Intro (first visit per session). The controller moves data-intro from
      "pending" to "play" to "settle", then removes it.
      ------------------------------------------------------------------ */
-  .js:not(.intro-seen) .stage[data-intro="pending"] .photo { --clip-t: 100%; }
+  .js:not(.intro-seen) .stage[data-intro="pending"] .photo { --edge-t: 100%; }
   .js:not(.intro-seen) .stage[data-intro="pending"] [data-intro-line] { translate: 0 110%; }
   .js:not(.intro-seen) .stage[data-intro="pending"] .paper { opacity: 0; }
 
   /* Hover wakes up while the text is still settling, so the controller moves data-intro from
      "play" to "settle" at that point. That drops the paper and photo animations (both finished
-     by then): while a clip animation is still attached to the photo, even a finished one, the
-     browser skips the photo's own clip transition and the cards snap open square-cornered. */
+     by then): while an edge animation is still attached to the photo, even a finished one, the
+     browser skips the photo's own edge transitions and the sky card snaps open. */
   .stage[data-intro="play"] .paper { animation: intro-fade 0.9s linear both; }
   .stage[data-intro="play"] .photo { animation: intro-photo 1.3s var(--ease-open) 0.1s both; }
   .stage:is([data-intro="play"], [data-intro="settle"]) .photo__intro { animation: intro-zoom 1.7s var(--ease-open) 0.1s both; }
@@ -303,7 +320,7 @@ const play = (await getCollection('play', visible)).sort(byOrder);
   .section--play .section__title   { --intro-i: 4; }
 
   @keyframes intro-fade  { from { opacity: 0; } }
-  @keyframes intro-photo { from { --clip-t: 100%; } }
+  @keyframes intro-photo { from { --edge-t: 100%; } }
   @keyframes intro-zoom  { from { scale: 1.12; } }
   @keyframes intro-line  { from { translate: 0 110%; } }
 </style>
